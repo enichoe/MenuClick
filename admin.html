@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - MenuQR Pro</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+          },
+          colors: {
+            surface: { 50: '#0a0a0b', 100: '#121214', 200: '#1a1a1d', 300: '#242428', 400: '#2e2e33', 500: '#3d3d42' },
+            accent: { DEFAULT: '#10b981', light: '#34d399', dark: '#059669' },
+            coral: '#f97316'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface-50" data-page="admin">
+  <div id="toastContainer" class="toast-container"></div>
+  
+  <div id="adminView" class="view active">
+    <div class="min-h-screen">
+      <header class="glass border-b border-surface-400 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-coral to-amber-500 flex items-center justify-center">
+              <i data-lucide="shield" class="w-6 h-6 text-black"></i>
+            </div>
+            <div>
+              <h1 class="font-display font-bold text-xl">Admin Panel</h1>
+              <p class="text-xs text-surface-500">MenuQR Pro</p>
+            </div>
+          </div>
+          <button onclick="window.app.auth.handleLogout(window.app.supabaseClient)" class="btn-secondary flex items-center gap-2">
+            <i data-lucide="log-out" class="w-4 h-4"></i> Salir
+          </button>
+        </div>
+      </header>
+      
+      <main class="max-w-7xl mx-auto p-6">
+        <!-- Stats -->
+        <div class="grid sm:grid-cols-4 gap-4 mb-8">
+          <div class="stat-card">
+            <p class="text-sm text-surface-500">Restaurantes</p>
+            <p id="adminStatRestaurants" class="font-display text-3xl font-bold">0</p>
+          </div>
+          <div class="stat-card">
+            <p class="text-sm text-surface-500">Platos totales</p>
+            <p id="adminStatItems" class="font-display text-3xl font-bold">0</p>
+          </div>
+          <div class="stat-card">
+            <p class="text-sm text-surface-500">Visitas totales</p>
+            <p id="adminStatViews" class="font-display text-3xl font-bold">0</p>
+          </div>
+          <div class="stat-card">
+            <p class="text-sm text-surface-500">Scaneos totales</p>
+            <p id="adminStatScans" class="font-display text-3xl font-bold">0</p>
+          </div>
+        </div>
+        
+        <!-- Table -->
+        <div class="card overflow-hidden">
+          <div class="p-4 border-b border-surface-400 flex items-center justify-between">
+            <h2 class="font-display font-semibold text-lg">Restaurantes</h2>
+            <input type="text" id="adminSearchInput" placeholder="Buscar..." class="input-field max-w-xs">
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-surface-200">
+                <tr>
+                  <th class="text-left p-4">Restaurante</th>
+                  <th class="text-left p-4">Email</th>
+                  <th class="text-left p-4">Plan</th>
+                  <th class="text-left p-4">Estado</th>
+                  <th class="text-left p-4">Fecha</th>
+                  <th class="text-left p-4">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="adminRestaurantsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/main.js" type="module"></script>
+</body>
+</html>

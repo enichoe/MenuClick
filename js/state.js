@@ -1,0 +1,25 @@
+/**
+ * @fileoverview Global state management
+ */
+
+export const state = {
+  currentUser: null,
+  userRole: 'user', // 'user' or 'admin'
+  currentRestaurant: null,
+  currentMenu: null,
+  categories: [],
+  menuItems: [],
+  editingCategoryId: null,
+  editingItemId: null,
+  confirmCallback: null,
+  uploadedImageUrl: null,
+  
+  // Setters
+  setUser(user) { this.currentUser = user; },
+  setUserRole(role) { this.userRole = role || 'user'; },
+  setRestaurant(restaurant) { this.currentRestaurant = restaurant; },
+  setMenu(menu) { this.currentMenu = menu; },
+  setCategories(cats) { this.categories = cats; },
+  setItems(items) { this.menuItems = items; },
+  setUploadedImageUrl(url) { this.uploadedImageUrl = url; }
+};

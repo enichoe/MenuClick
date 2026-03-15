@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - MenuQR Pro</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+          },
+          colors: {
+            surface: {
+              50: '#0a0a0b',
+              100: '#121214',
+              200: '#1a1a1d',
+              300: '#242428',
+              400: '#2e2e33',
+              500: '#3d3d42',
+            },
+            accent: {
+              DEFAULT: '#10b981',
+              light: '#34d399',
+              dark: '#059669',
+              glow: 'rgba(16, 185, 129, 0.3)',
+            },
+            coral: '#f97316',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface-50" data-page="dashboard">
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+  
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-surface-50/90 z-[300] flex items-center justify-center">
+    <div class="text-center">
+      <div class="spinner mx-auto mb-4"></div>
+      <p class="text-surface-500 font-body">Cargando...</p>
+    </div>
+  </div>
+
+  <div id="dashboardView" class="view active">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="p-6">
+        <a href="index.html" class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-accent-light flex items-center justify-center">
+            <i data-lucide="qr-code" class="w-6 h-6 text-black"></i>
+          </div>
+          <span class="font-display font-bold text-xl">MenuQR Pro</span>
+        </a>
+        
+        <nav class="space-y-2">
+          <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-left bg-surface-400 text-accent" data-section="overview">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span>Panel Principal</span>
+          </button>
+          <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-left" data-section="menu">
+            <i data-lucide="utensils" class="w-5 h-5"></i>
+            <span>Mi Menú</span>
+          </button>
+          <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-left" data-section="qr">
+            <i data-lucide="qr-code" class="w-5 h-5"></i>
+            <span>Código QR</span>
+          </button>
+          <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-left" data-section="stats">
+            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+            <span>Estadísticas</span>
+          </button>
+          <button class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-left" data-section="settings">
+            <i data-lucide="settings" class="w-5 h-5"></i>
+            <span>Configuración</span>
+          </button>
+        </nav>
+      </div>
+      
+      <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-surface-400">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-surface-400 flex items-center justify-center">
+            <i data-lucide="user" class="w-5 h-5"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p id="sidebarUserName" class="font-medium truncate">Usuario</p>
+            <p id="sidebarUserEmail" class="text-xs text-surface-500 truncate">email@email.com</p>
+          </div>
+        </div>
+        <button onclick="window.app.auth.handleLogout(window.app.supabaseClient)" class="btn-secondary w-full flex items-center justify-center gap-2">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+          Cerrar Sesión
+        </button>
+      </div>
+    </aside>
+    
+    <!-- Mobile sidebar toggle -->
+    <button id="sidebarToggle" class="fixed top-4 left-4 z-[60] p-2 glass rounded-lg lg:hidden">
+      <i data-lucide="menu" class="w-6 h-6"></i>
+    </button>
+    
+    <!-- Main Content -->
+    <main class="lg:ml-[280px] min-h-screen bg-surface-50">
+      <header class="sticky top-0 z-40 glass border-b border-surface-400 px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="lg:hidden w-10"></div>
+          <h1 id="pageTitle" class="font-display text-xl font-bold">Panel Principal</h1>
+          <div class="flex items-center gap-4">
+            <a id="viewMenuLink" href="#" target="_blank" class="btn-secondary text-sm hidden sm:flex items-center gap-2">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+              Ver Menú
+            </a>
+          </div>
+        </div>
+      </header>
+      
+      <div class="p-6">
+        <!-- Overview Section -->
+        <section id="overviewSection" class="dashboard-section">
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 stagger-children">
+            <div class="stat-card">
+              <div class="flex items-center gap-3 mb-2">
+                <i data-lucide="eye" class="w-5 h-5 text-accent"></i>
+                <span class="text-sm text-surface-500">Visitas totales</span>
+              </div>
+              <p id="statTotalViews" class="font-display text-3xl font-bold">0</p>
+            </div>
+            <div class="stat-card">
+              <div class="flex items-center gap-3 mb-2">
+                <i data-lucide="qr-code" class="w-5 h-5 text-coral"></i>
+                <span class="text-sm text-surface-500">Scaneos QR</span>
+              </div>
+              <p id="statQrScans" class="font-display text-3xl font-bold">0</p>
+            </div>
+            <div class="stat-card">
+              <div class="flex items-center gap-3 mb-2">
+                <i data-lucide="utensils" class="w-5 h-5 text-cyan-500"></i>
+                <span class="text-sm text-surface-500">Total platos</span>
+              </div>
+              <p id="statTotalItems" class="font-display text-3xl font-bold">0</p>
+            </div>
+            <div class="stat-card">
+              <div class="flex items-center gap-3 mb-2">
+                <i data-lucide="folder" class="w-5 h-5 text-pink-500"></i>
+                <span class="text-sm text-surface-500">Categorías</span>
+              </div>
+              <p id="statTotalCategories" class="font-display text-3xl font-bold">0</p>
+            </div>
+          </div>
+          
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="card p-6">
+              <h3 class="font-display font-semibold text-lg mb-4">Acciones rápidas</h3>
+              <div class="space-y-3">
+                <button onclick="window.app.ui.showCategoryModal()" class="btn-secondary w-full flex items-center gap-3">
+                  <i data-lucide="plus" class="w-5 h-5"></i>
+                  Nueva categoría
+                </button>
+                <button onclick="window.app.ui.showItemModal()" class="btn-primary w-full flex items-center justify-center gap-3">
+                  <i data-lucide="plus" class="w-5 h-5"></i>
+                  Nuevo plato
+                </button>
+              </div>
+            </div>
+            <div class="card p-6">
+              <h3 class="font-display font-semibold text-lg mb-4">Tu código QR</h3>
+              <div class="flex items-center gap-6">
+                <div class="qr-container">
+                  <div id="dashboardQR" class="w-24 h-24"></div>
+                </div>
+                <div>
+                  <p class="text-sm text-surface-500 mb-2">Escanea para ver tu menú</p>
+                  <button onclick="showDashboardSection('qr')" class="text-accent text-sm hover:underline">Descargar QR</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section id="menuSection" class="dashboard-section hidden">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <h2 class="font-display text-2xl font-bold">Gestionar Menú</h2>
+            <div class="flex gap-3">
+              <button onclick="window.app.ui.showCategoryModal()" class="btn-secondary flex items-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4"></i> Categoria
+              </button>
+              <button onclick="window.app.ui.showItemModal()" class="btn-primary flex items-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4"></i> Plato
+              </button>
+            </div>
+          </div>
+          <div id="menuContent" class="space-y-6"></div>
+          <div id="emptyMenuState" class="hidden text-center py-16">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-surface-400 flex items-center justify-center mb-4">
+              <i data-lucide="utensils" class="w-8 h-8 text-surface-500"></i>
+            </div>
+            <h3 class="font-display font-semibold text-xl mb-2">Tu menú está vacío</h3>
+            <p class="text-surface-500 mb-6">Comienza agregando categorías y platos</p>
+            <button onclick="window.app.ui.showCategoryModal()" class="btn-primary">Agregar primera categoría</button>
+          </div>
+        </section>
+
+        <!-- QR Section -->
+        <section id="qrSection" class="dashboard-section hidden">
+          <h2 class="font-display text-2xl font-bold mb-6">Tu Código QR</h2>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="card p-8 text-center">
+              <div class="inline-block qr-container mb-6">
+                <div id="mainQR" class="w-48 h-48"></div>
+              </div>
+              <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <button onclick="window.app.qr.downloadQR()" class="btn-primary flex items-center justify-center gap-2">
+                  <i data-lucide="download" class="w-4 h-4"></i> Descargar PNG
+                </button>
+                <button onclick="window.app.qr.printQR()" class="btn-secondary flex items-center justify-center gap-2">
+                  <i data-lucide="printer" class="w-4 h-4"></i> Imprimir
+                </button>
+              </div>
+            </div>
+            <div class="card p-6">
+              <h3 class="font-display font-semibold text-lg mb-4">Enlace a tu menú</h3>
+              <div class="flex gap-2 mb-6">
+                <input type="text" id="menuUrlInput" class="input-field flex-1" readonly>
+                <button onclick="window.app.qr.copyMenuUrl()" class="btn-secondary px-4">
+                  <i data-lucide="copy" class="w-5 h-5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section id="statsSection" class="dashboard-section hidden">
+          <h2 class="font-display text-2xl font-bold mb-6">Estadísticas</h2>
+          <div class="grid sm:grid-cols-3 gap-4 mb-8">
+            <div class="stat-card">
+              <p class="text-sm text-surface-500">Visitas este mes</p>
+              <p id="statMonthViews" class="font-display text-3xl font-bold">0</p>
+            </div>
+          </div>
+          <div class="card p-6">
+            <h3 class="font-display font-semibold text-lg mb-4">Platos más vistos</h3>
+            <div id="topItemsList" class="space-y-3"></div>
+          </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settingsSection" class="dashboard-section hidden">
+          <h2 class="font-display text-2xl font-bold mb-6">Configuración</h2>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="card p-6">
+              <form id="restaurantSettingsForm" class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium mb-2">Nombre del Negocio</label>
+                  <input type="text" id="settingsRestaurantName" class="input-field" placeholder="Nombre" required>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-2">Descripción</label>
+                  <textarea id="settingsRestaurantDesc" class="input-field" rows="3" placeholder="Descripción"></textarea>
+                </div>
+                <button type="submit" class="btn-primary w-full">Guardar cambios</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODALS -->
+  <div id="categoryModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="p-6">
+        <h3 id="categoryModalTitle" class="font-display text-xl font-bold mb-4">Nueva Categoría</h3>
+        <form id="categoryForm" class="space-y-4">
+          <input type="hidden" id="categoryId">
+          <input type="text" id="categoryName" class="input-field" placeholder="Nombre" required>
+          <textarea id="categoryDesc" class="input-field" rows="2" placeholder="Descripción"></textarea>
+          <button type="submit" class="btn-primary w-full">Guardar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal-overlay">
+    <div class="modal-content max-w-md">
+      <div class="p-6 text-center">
+        <h3 id="confirmTitle" class="font-display text-xl font-bold mb-2">Confirmar</h3>
+        <p id="confirmMessage" class="text-surface-500 mb-6"></p>
+        <div class="flex gap-3">
+          <button onclick="window.app.ui.closeConfirmModal()" class="btn-secondary flex-1">Cancelar</button>
+          <button id="confirmButton" class="btn-primary flex-1">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js" type="module"></script>
+</body>
+</html>

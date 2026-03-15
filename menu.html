@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menú Digital - MenuQR Pro</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+          },
+          colors: {
+            surface: { 50: '#0a0a0b', 100: '#121214', 200: '#1a1a1d', 300: '#242428', 400: '#2e2e33', 500: '#3d3d42' },
+            accent: { DEFAULT: '#10b981', light: '#34d399', dark: '#059669' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface-50" data-page="menu">
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+  
+  <div id="publicMenuView" class="view active">
+    <!-- Menu Header -->
+    <header id="publicMenuHeader" class="py-12 px-4 text-center border-b border-surface-400 bg-surface-100">
+      <div class="max-w-lg mx-auto">
+        <div id="publicMenuLogo" class="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-br from-accent to-accent-light mb-6 overflow-hidden">
+          <img id="publicLogoImg" src="" alt="" class="w-full h-full object-cover hidden">
+        </div>
+        <h1 id="publicMenuTitle" class="font-display text-3xl font-bold mb-3">Cargando...</h1>
+        <p id="publicMenuDesc" class="text-surface-500 text-lg"></p>
+      </div>
+    </header>
+    
+    <!-- Category Navigation -->
+    <nav id="categoryNav" class="sticky top-0 z-40 glass border-b border-surface-400 py-4 px-4 overflow-x-auto">
+      <div class="flex gap-3 justify-center min-w-max" id="categoryTabs"></div>
+    </nav>
+    
+    <!-- Menu Items -->
+    <main class="max-w-2xl mx-auto p-4 py-8">
+      <div id="publicMenuItems" class="space-y-6"></div>
+      <div id="publicMenuEmpty" class="hidden text-center py-20">
+        <p class="text-surface-500 text-lg">Este menú aún no tiene platos.</p>
+      </div>
+    </main>
+    
+    <footer class="py-12 text-center border-t border-surface-400 mt-12">
+      <p class="text-sm text-surface-500">Powered by <span class="text-accent font-semibold">MenuQR Pro</span></p>
+    </footer>
+  </div>
+
+  <script src="js/main.js" type="module"></script>
+</body>
+</html>

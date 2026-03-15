@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MenuQR Pro - Menú Digital para Restaurantes</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+          },
+          colors: {
+            surface: {
+              50: '#0a0a0b',
+              100: '#121214',
+              200: '#1a1a1d',
+              300: '#242428',
+              400: '#2e2e33',
+              500: '#3d3d42',
+            },
+            accent: {
+              DEFAULT: '#10b981',
+              light: '#34d399',
+              dark: '#059669',
+              glow: 'rgba(16, 185, 129, 0.3)',
+            },
+            coral: '#f97316',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface-50" data-page="landing">
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+  
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 bg-surface-50/90 z-[300] flex items-center justify-center">
+    <div class="text-center">
+      <div class="spinner mx-auto mb-4"></div>
+      <p class="text-surface-500 font-body">Cargando...</p>
+    </div>
+  </div>
+  
+  <!-- ============ LANDING PAGE ============ -->
+  <div id="landingView" class="view active">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <a href="#" class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-accent-light flex items-center justify-center">
+              <i data-lucide="qr-code" class="w-6 h-6 text-black"></i>
+            </div>
+            <span class="font-display font-bold text-xl">MenuQR Pro</span>
+          </a>
+          
+          <div class="hidden md:flex items-center gap-8">
+            <a href="#features" class="text-surface-500 hover:text-white transition-colors">Características</a>
+            <a href="#how-it-works" class="text-surface-500 hover:text-white transition-colors">Cómo funciona</a>
+            <a href="#pricing" class="text-surface-500 hover:text-white transition-colors">Precios</a>
+          </div>
+          
+          <div class="flex items-center gap-4">
+            <button onclick="window.app.ui.showAuthModal('login')" class="btn-secondary hidden sm:block">Iniciar Sesión</button>
+            <button onclick="window.app.ui.showAuthModal('register')" class="btn-primary">Comenzar Gratis</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="min-h-screen pt-16 relative overflow-hidden bg-grid">
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px]"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 lg:pt-32">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <div class="stagger-children">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6">
+              <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+              <span class="text-sm text-surface-500">Más de 1,000 restaurantes confían en nosotros</span>
+            </div>
+            <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+              Tu menú digital en <span class="gradient-text">segundos</span>
+            </h1>
+            <p class="text-lg text-surface-500 mb-8 max-w-lg">
+              Crea menús digitales profesionales con códigos QR. Tus clientes escanean, ven tu menú y ordenan. Sin apps, sin complicaciones.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 mb-12">
+              <button onclick="window.app.ui.showAuthModal('register')" class="btn-primary text-lg py-4 px-8">Crear mi menú gratis</button>
+              <a href="#how-it-works" class="btn-secondary text-lg py-4 px-8 flex items-center justify-center gap-2">
+                <i data-lucide="play-circle" class="w-5 h-5"></i>
+                Ver cómo funciona
+              </a>
+            </div>
+          </div>
+          <div class="relative flex justify-center">
+            <div class="animate-float">
+              <div class="relative w-[280px] sm:w-[320px]">
+                <div class="bg-surface-200 rounded-[40px] p-3 border border-surface-400 shadow-2xl">
+                  <div class="bg-surface-100 rounded-[32px] overflow-hidden">
+                    <div class="p-4 bg-surface-50 min-h-[500px]">
+                      <div class="text-center mb-6">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-accent to-accent-light mb-3"></div>
+                        <h3 class="font-display font-bold text-lg">La Pizzería</h3>
+                        <p class="text-xs text-surface-500">Auténtica pizza italiana</p>
+                      </div>
+                      <div class="space-y-3">
+                        <div class="bg-surface-200 rounded-xl p-3 flex gap-3">
+                          <div class="w-16 h-16 rounded-lg bg-surface-400 flex-shrink-0"></div>
+                          <div class="flex-1 text-left">
+                            <h4 class="font-semibold text-sm">Margherita</h4>
+                            <p class="text-xs text-surface-500 line-clamp-2">Salsa, mozzarella, albahaca</p>
+                            <span class="text-accent font-bold text-sm">$12.99</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="absolute -right-8 bottom-20 bg-white p-3 rounded-xl shadow-xl">
+                  <div id="heroQR" class="w-20 h-20"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <!-- AUTH MODAL -->
+  <div id="authModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 id="authModalTitle" class="font-display text-xl font-bold">Iniciar Sesión</h3>
+          <button onclick="window.app.ui.closeAuthModal()" class="p-2 hover:bg-surface-400 rounded-lg transition-colors">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <form id="loginForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">Email</label>
+            <input type="email" id="loginEmail" class="input-field" placeholder="tu@email.com" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Contraseña</label>
+            <input type="password" id="loginPassword" class="input-field" placeholder="********" required>
+          </div>
+          <button type="submit" class="btn-primary w-full">Iniciar Sesión</button>
+        </form>
+        <form id="registerForm" class="space-y-4 hidden">
+          <input type="text" id="registerName" class="input-field" placeholder="Nombre completo" required>
+          <input type="text" id="registerRestaurant" class="input-field" placeholder="Nombre del restaurante" required>
+          <input type="email" id="registerEmail" class="input-field" placeholder="tu@email.com" required>
+          <input type="password" id="registerPassword" class="input-field" placeholder="Contraseña (mín. 6)" required minlength="6">
+          <button type="submit" class="btn-primary w-full">Crear Cuenta</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js" type="module"></script>
+</body>
+</html>
