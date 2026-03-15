@@ -103,45 +103,146 @@ export function printQR() {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Imprimir QR - ${r.name}</title>
-          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+          <title>Menú QR - ${r.name}</title>
+          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
           <style>
-            body { font-family: 'DM Sans', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #fdfdfd; }
-            .print-card { 
-              width: 148mm; /* Medio Oficio aprox */
-              height: 210mm; /* A5 / Medio Oficio vertical */
-              padding: 20mm;
+            @page { margin: 0; size: A5 portrait; }
+            body { 
+              margin: 0; 
+              padding: 0; 
+              font-family: 'DM Sans', sans-serif; 
+              background: #fff;
+              -webkit-print-color-adjust: exact;
+            }
+            .print-card {
+              width: 148mm;
+              height: 210mm;
+              padding: 15mm;
               display: flex;
-              flex-direction: column; 
-              align-items: center; 
-              justify-content: center;
-              border: 1px solid #eee;
+              flex-direction: column;
+              align-items: center;
+              justify-content: space-between;
               text-align: center;
               box-sizing: border-box;
+              background: #fff;
             }
-            .business-name { font-family: 'Space Grotesk', sans-serif; font-size: 32pt; font-weight: bold; margin-bottom: 5mm; color: #000; }
-            .business-phone { font-size: 18pt; color: #555; margin-bottom: 15mm; }
-            .qr-image { width: 80mm; height: 80mm; margin-bottom: 15mm; }
-            .footer { display: flex; flex-direction: column; align-items: center; gap: 3mm; }
-            .app-logo { width: 30mm; }
-            .tagline { font-size: 10pt; color: #888; text-transform: uppercase; letter-spacing: 2pt; }
+            .header { margin-top: 5mm; }
+            .business-name { 
+              font-family: 'Space Grotesk', sans-serif; 
+              font-size: 34pt; 
+              font-weight: 800; 
+              color: #111; 
+              margin: 0;
+              line-height: 1.1;
+              text-transform: uppercase;
+            }
+            .business-info {
+              font-size: 14pt;
+              color: #666;
+              margin-top: 4mm;
+              font-weight: 500;
+              letter-spacing: 0.5mm;
+            }
+            
+            .main-content {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+            }
+            
+            .qr-wrapper {
+              position: relative;
+              padding: 8mm;
+              background: #fff;
+              border-radius: 40px;
+              border: 5px solid #10b981;
+              margin: 12mm 0;
+              box-shadow: 0 10mm 30mm rgba(16, 185, 129, 0.1);
+            }
+            .qr-image {
+              width: 80mm;
+              height: 80mm;
+              display: block;
+            }
+            
+            .cta-container {
+              margin-top: 5mm;
+            }
+            .cta-title {
+              font-family: 'Space Grotesk', sans-serif;
+              font-size: 18pt;
+              font-weight: 800;
+              color: #10b981;
+              margin: 0;
+              text-transform: uppercase;
+              letter-spacing: 0.8mm;
+            }
+            .cta-subtitle {
+              font-size: 12pt;
+              color: #444;
+              margin-top: 3mm;
+              max-width: 90%;
+            }
+            
+            .footer {
+              margin-bottom: 5mm;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 4mm;
+              width: 100%;
+            }
+            .footer-line {
+              width: 50mm;
+              height: 1px;
+              background: #eee;
+              margin-bottom: 2mm;
+            }
+            .tagline {
+              font-size: 9pt;
+              color: #999;
+              font-weight: 700;
+              letter-spacing: 0.25rem;
+              text-transform: uppercase;
+            }
+            .app-logo {
+              width: 60mm;
+              opacity: 1;
+              filter: grayscale(0.1);
+            }
+            
             @media print {
               body { background: white; }
               .print-card { border: none; }
+              .qr-wrapper { border-color: #10b981 !important; -webkit-print-color-adjust: exact; }
             }
           </style>
         </head>
-        <body onload="window.print();">
+        <body onload="setTimeout(() => window.print(), 500);">
           <div class="print-card">
-            <div class="business-name">${r.name.toUpperCase()}</div>
-            <div class="business-phone">${r.phone ? 'TELÉFONO: ' + r.phone : 'ESCANEAME PARA VER EL MENÚ'}</div>
+            <div class="header">
+              <h1 class="business-name">${r.name}</h1>
+              <p class="business-info">${r.phone ? '☎️ ' + r.phone : 'DISFRUTA NUESTRO MENÚ'}</p>
+            </div>
             
-            <img src="${qrImage}" class="qr-image">
+            <div class="main-content">
+              <div class="qr-wrapper">
+                <img src="${qrImage}" class="qr-image">
+              </div>
+              
+              <div class="cta-container">
+                <h2 class="cta-title">Escanea el Código QR</h2>
+                <p class="cta-subtitle">Para ver nuestra carta digital y precios actualizados directamente en tu celular.</p>
+              </div>
+            </div>
             
             <div class="footer">
-              <div class="tagline">TECNOLOGÍA POR</div>
+              <div class="footer-line"></div>
+              <div class="tagline">Tecnología Impulsada por</div>
               <img src="${logoUrl}" class="app-logo">
-              <div style="font-size: 8pt; color: #aaa; margin-top: 2mm;">www.menuclick.com</div>
             </div>
           </div>
         </body>
