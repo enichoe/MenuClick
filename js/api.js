@@ -211,3 +211,33 @@ export async function toggleRestaurantStatus(supabase, id, newStatus) {
     'Error al cambiar estado'
   );
 }
+/**
+ * Upload an image to Supabase Storage
+ * @param {Object} supabase - Supabase client
+ * @param {File} file - File object from input
+ * @param {string} bucket - Bucket name (default 'images')
+ * @returns {Promise<string|null>} - Public URL of the uploaded image
+ */
+export async function uploadImage(supabase, file, bucket = 'images') {
+  if (!supabase || !file) return null;
+  
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+  const filePath = `${state.currentUser.id}/${fileName}`;
+  
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .upload(filePath, file);
+    
+  if (error) {
+    console.error('Upload error:', error);
+    showToast('Error al subir imagen', 'error');
+    return null;
+  }
+  
+  const { data: { publicUrl } } = supabase.storage
+    .from(bucket)
+    .getPublicUrl(filePath);
+    
+  return publicUrl;
+}

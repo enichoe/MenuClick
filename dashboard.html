@@ -112,7 +112,7 @@
             <p id="sidebarUserEmail" class="text-xs text-surface-500 truncate">email@email.com</p>
           </div>
         </div>
-        <button onclick="window.app.auth.handleLogout(window.app.supabaseClient)" class="btn-secondary w-full flex items-center justify-center gap-2">
+        <button onclick="window.app.auth.handleLogout(window.app.supabaseClient)" class="btn-secondary w-full flex items-center justify-center gap-2 mt-auto">
           <i data-lucide="log-out" class="w-4 h-4"></i>
           Cerrar Sesión
         </button>
@@ -231,16 +231,23 @@
           <h2 class="font-display text-2xl font-bold mb-6">Tu Código QR</h2>
           <div class="grid md:grid-cols-2 gap-8">
             <div class="card p-8 text-center">
-              <div class="inline-block qr-container mb-6">
-                <div id="mainQR" class="w-48 h-48"></div>
+              <div class="inline-block qr-container mb-6 bg-white p-4 rounded-3xl shadow-inner">
+                <div id="mainQR" class="w-48 h-48 flex items-center justify-center text-surface-400">
+                  <i data-lucide="qr-code" class="w-12 h-12"></i>
+                </div>
               </div>
-              <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                <button onclick="window.app.qr.downloadQR()" class="btn-primary flex items-center justify-center gap-2">
-                  <i data-lucide="download" class="w-4 h-4"></i> Descargar PNG
+              <div class="flex flex-col gap-3">
+                <button onclick="window.app.qr.generateDashboardQR()" class="btn-primary w-full flex items-center justify-center gap-2">
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i> Generar / Actualizar QR
                 </button>
-                <button onclick="window.app.qr.printQR()" class="btn-secondary flex items-center justify-center gap-2">
-                  <i data-lucide="printer" class="w-4 h-4"></i> Imprimir
-                </button>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button onclick="window.app.qr.downloadQR()" class="btn-secondary flex-1 flex items-center justify-center gap-2">
+                    <i data-lucide="download" class="w-4 h-4"></i> Descargar
+                  </button>
+                  <button onclick="window.app.qr.printQR()" class="btn-secondary flex-1 flex items-center justify-center gap-2">
+                    <i data-lucide="printer" class="w-4 h-4"></i> Imprimir
+                  </button>
+                </div>
               </div>
             </div>
             <div class="card p-6">
@@ -290,12 +297,30 @@
                     <textarea id="settingsRestaurantDesc" class="input-field" rows="2" placeholder="Ej: Auténtica pizza italiana"></textarea>
                   </div>
                   <div>
-                    <label class="block text-sm font-medium mb-2">URL del Logo (Imagen)</label>
-                    <input type="url" id="settingsLogoUrl" class="input-field" placeholder="https://...">
+                    <label class="block text-sm font-medium mb-2">Logo del Negocio</label>
+                    <div class="flex flex-col gap-4">
+                      <input type="file" id="settingsLogoFile" class="hidden" accept="image/*">
+                      <label for="settingsLogoFile" class="btn-secondary w-full cursor-pointer flex items-center justify-center gap-2 py-3 border-dashed border-2">
+                        <i data-lucide="upload" class="w-4 h-4"></i> Seleccionar Logo
+                      </label>
+                      <input type="hidden" id="settingsLogoUrl">
+                      <div id="settingsLogoPreview" class="hidden relative w-24 h-24 mx-auto rounded-2xl overflow-hidden border border-surface-400">
+                        <img id="settingsLogoPreviewImg" src="" class="w-full h-full object-cover">
+                      </div>
+                    </div>
                   </div>
                   <div>
-                    <label class="block text-sm font-medium mb-2">URL de Portada (Banner)</label>
-                    <input type="url" id="settingsBannerUrl" class="input-field" placeholder="https://...">
+                    <label class="block text-sm font-medium mb-2">Imagen de Portada (Banner)</label>
+                    <div class="flex flex-col gap-4">
+                      <input type="file" id="settingsBannerFile" class="hidden" accept="image/*">
+                      <label for="settingsBannerFile" class="btn-secondary w-full cursor-pointer flex items-center justify-center gap-2 py-3 border-dashed border-2">
+                        <i data-lucide="image" class="w-4 h-4"></i> Seleccionar Banner
+                      </label>
+                      <input type="hidden" id="settingsBannerUrl">
+                      <div id="settingsBannerPreview" class="hidden relative w-full h-32 rounded-2xl overflow-hidden border border-surface-400">
+                        <img id="settingsBannerPreviewImg" src="" class="w-full h-full object-cover">
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -519,10 +544,20 @@
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-2">URL de Imagen</label>
-            <input type="url" id="itemImageUrl" class="input-field" placeholder="https://ejemplo.com/imagen.jpg">
-            <div id="itemImagePreview" class="hidden mt-2">
-              <img id="itemImagePreviewImg" src="" class="w-full h-32 object-cover rounded-xl mt-2 border border-surface-400">
+            <label class="block text-sm font-medium mb-2">Imagen del plato</label>
+            <div class="flex flex-col gap-4">
+              <input type="file" id="itemImageFile" class="hidden" accept="image/*">
+              <label for="itemImageFile" id="itemImageZone" class="btn-secondary w-full cursor-pointer flex flex-col items-center justify-center gap-2 py-6 border-dashed border-2 rounded-2xl hover:bg-surface-400 transition-colors">
+                <i data-lucide="camera" class="w-8 h-8 text-surface-500"></i>
+                <span class="text-sm font-medium text-surface-500">Hacer foto o subir imagen</span>
+              </label>
+              <input type="hidden" id="itemImageUrl">
+              <div id="itemImagePreview" class="hidden relative group">
+                <img id="itemImagePreviewImg" src="" class="w-full h-40 object-cover rounded-2xl border border-surface-400 shadow-lg">
+                <button type="button" onclick="document.getElementById('itemImageFile').click()" class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
+                  <span class="text-white text-sm font-bold">Cambiar imagen</span>
+                </button>
+              </div>
             </div>
           </div>
 

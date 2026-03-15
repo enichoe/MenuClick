@@ -160,6 +160,21 @@ async function initDashboard() {
       link.href = menuUrl;
       link.classList.remove('hidden');
     }
+
+    // Setup image previews
+    ui.setupImagePreview('itemImageFile', 'itemImagePreviewImg', 'itemImagePreview');
+    ui.setupImagePreview('settingsLogoFile', 'settingsLogoPreviewImg', 'settingsLogoPreview');
+    ui.setupImagePreview('settingsBannerFile', 'settingsBannerPreviewImg', 'settingsBannerPreview');
+    
+    // Show current images in previews if they exist
+    if (r.logo_url) {
+      document.getElementById('settingsLogoPreviewImg').src = r.logo_url;
+      document.getElementById('settingsLogoPreview').classList.remove('hidden');
+    }
+    if (r.banner_url) {
+      document.getElementById('settingsBannerPreviewImg').src = r.banner_url;
+      document.getElementById('settingsBannerPreview').classList.remove('hidden');
+    }
   }
 }
 
@@ -229,16 +244,24 @@ async function handleCategorySubmit(e) {
 async function handleItemSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('itemId').value;
-  const imageUrl = document.getElementById('itemImageUrl').value;
+  const imageFile = document.getElementById('itemImageFile').files[0];
+  let imageUrl = document.getElementById('itemImageUrl').value;
+  
+  if (imageFile) {
+    ui.showToast('Subiendo imagen...', 'warning');
+    const uploadedUrl = await api.uploadImage(supabaseClient, imageFile);
+    if (uploadedUrl) imageUrl = uploadedUrl;
+  }
+
   const itemData = {
-    restaurant_id: state.currentRestaurant.id, // Requerido por la BD y RLS
+    restaurant_id: state.currentRestaurant.id,
     category_id: document.getElementById('itemCategory').value,
     name: document.getElementById('itemName').value,
     description: document.getElementById('itemDesc').value,
     price: parseFloat(document.getElementById('itemPrice').value),
     is_available: document.getElementById('itemAvailable').checked,
     is_featured: document.getElementById('itemFeatured')?.checked || false,
-    image_url: imageUrl || state.uploadedImageUrl
+    image_url: imageUrl
   };
   
   if (id) {
@@ -261,6 +284,23 @@ async function handleItemSubmit(e) {
 async function handleSettingsSubmit(e) {
   e.preventDefault();
   
+  const logoFile = document.getElementById('settingsLogoFile').files[0];
+  const bannerFile = document.getElementById('settingsBannerFile').files[0];
+  let logoUrl = document.getElementById('settingsLogoUrl').value;
+  let bannerUrl = document.getElementById('settingsBannerUrl').value;
+
+  if (logoFile || bannerFile) {
+    ui.showToast('Subiendo imágenes...', 'warning');
+    if (logoFile) {
+      const url = await api.uploadImage(supabaseClient, logoFile);
+      if (url) logoUrl = url;
+    }
+    if (bannerFile) {
+      const url = await api.uploadImage(supabaseClient, bannerFile);
+      if (url) bannerUrl = url;
+    }
+  }
+
   const hours = {};
   ['lunes','martes','miercoles','jueves','viernes','sabado','domingo'].forEach(day => {
     hours[day] = {
@@ -283,8 +323,8 @@ async function handleSettingsSubmit(e) {
     website: document.getElementById('settingsWebsite').value,
     primary_color: document.getElementById('settingsPrimaryColor').value,
     button_color: document.getElementById('settingsButtonColor').value,
-    logo_url: document.getElementById('settingsLogoUrl').value,
-    banner_url: document.getElementById('settingsBannerUrl').value,
+    logo_url: logoUrl,
+    banner_url: bannerUrl,
     opening_hours: hours
   };
   

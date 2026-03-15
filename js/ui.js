@@ -156,7 +156,7 @@ export function renderMenuContent() {
               <div class="p-4">
                 <div class="flex items-start justify-between gap-2 mb-2">
                   <h4 class="font-semibold">${sanitize(item.name)}</h4>
-                  <span class="text-accent font-bold">$${parseFloat(item.price).toFixed(2)}</span>
+                  <span class="text-accent font-bold">S/ ${parseFloat(item.price).toFixed(2)}</span>
                 </div>
                 <p class="text-sm text-surface-500 line-clamp-2 mb-3">${sanitize(item.description)}</p>
                 <div class="flex gap-2">
@@ -306,7 +306,7 @@ export function renderPublicMenu(restaurant, publicCategories, publicItems, supa
               <div class="flex-1 min-w-0 flex flex-col justify-center">
                 <div class="flex items-start justify-between gap-2">
                   <h3 class="font-bold text-lg sm:text-xl text-white group-hover:text-accent transition-colors">${sanitize(item.name)}</h3>
-                  <span class="text-accent font-bold text-xl" style="${restaurant.primary_color ? `color: ${restaurant.primary_color}` : ''}">$${parseFloat(item.price).toFixed(2)}</span>
+                  <span class="text-accent font-bold text-xl" style="${restaurant.primary_color ? `color: ${restaurant.primary_color}` : ''}">S/ ${parseFloat(item.price).toFixed(2)}</span>
                 </div>
                 <p class="text-sm text-surface-500 line-clamp-2 mt-2 leading-relaxed">${sanitize(item.description)}</p>
               </div>
@@ -484,4 +484,29 @@ export function adminDeleteRestaurant(id) {
     showToast('Negocio eliminado');
     window.app.initAdmin();
   });
+}
+/**
+ * Setup image preview for file inputs
+ * @param {string} inputId - ID of file input
+ * @param {string} previewImgId - ID of img element for preview
+ * @param {string} containerId - ID of container to show/hide
+ */
+export function setupImagePreview(inputId, previewImgId, containerId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewImgId);
+  const container = document.getElementById(containerId);
+  
+  if (input && preview && container) {
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.src = e.target.result;
+          container.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
 }

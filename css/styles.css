@@ -420,3 +420,25 @@ body {
     .animate-float {
       animation: float 4s ease-in-out infinite;
     }
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .p-6 { padding: 1rem !important; }
+  .dashboard-section { padding-bottom: 5rem; }
+  .stat-card { padding: 1.25rem; }
+  .btn-primary, .btn-secondary { padding: 10px 16px; font-size: 14px; width: 100%; }
+  .card { border-radius: 12px; }
+  .input-field { padding: 12px; font-size: 16px; }
+  .sidebar { width: 100%; max-width: 300px; }
+}
+
+#sidebarToggle {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.sidebar.open {
+  box-shadow: 0 0 40px rgba(0,0,0,0.8);
+}
+
+#categoryNav::-webkit-scrollbar { display: none; }
+#categoryNav { -ms-overflow-style: none; scrollbar-width: none; }
