@@ -106,74 +106,76 @@ export function printQR() {
           <title>Menú QR - ${r.name}</title>
           <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
           <style>
-            @page { margin: 0; size: A5 portrait; }
-            body { 
+            @page { 
+              margin: 0; 
+              size: portrait; /* Forzamos retrato sin especificar tamaño exacto para mayor compatibilidad */
+            }
+            html, body { 
               margin: 0; 
               padding: 0; 
-              font-family: 'DM Sans', sans-serif; 
+              width: 100%;
+              height: 100%;
+              overflow: hidden;
               background: #fff;
               -webkit-print-color-adjust: exact;
             }
+            body {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              font-family: 'DM Sans', sans-serif;
+            }
             .print-card {
-              width: 148mm;
-              height: 210mm;
-              padding: 15mm;
+              width: 100%;
+              max-width: 148mm;
+              height: 100vh;
+              max-height: 210mm;
+              padding: 10mm 15mm;
               display: flex;
               flex-direction: column;
               align-items: center;
-              justify-content: space-between;
+              justify-content: space-around; /* Distribución uniforme */
               text-align: center;
               box-sizing: border-box;
               background: #fff;
+              page-break-after: avoid;
             }
-            .header { margin-top: 5mm; }
+            .header { margin-top: 0; }
             .business-name { 
               font-family: 'Space Grotesk', sans-serif; 
-              font-size: 34pt; 
+              font-size: 32pt; 
               font-weight: 800; 
               color: #111; 
               margin: 0;
-              line-height: 1.1;
+              line-height: 1;
               text-transform: uppercase;
+              word-wrap: break-word;
             }
             .business-info {
-              font-size: 14pt;
+              font-size: 13pt;
               color: #666;
-              margin-top: 4mm;
+              margin-top: 2mm;
               font-weight: 500;
               letter-spacing: 0.5mm;
             }
             
-            .main-content {
-              flex: 1;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              width: 100%;
-            }
-            
             .qr-wrapper {
-              position: relative;
-              padding: 8mm;
+              padding: 6mm;
               background: #fff;
-              border-radius: 40px;
+              border-radius: 35px;
               border: 5px solid #10b981;
-              margin: 12mm 0;
-              box-shadow: 0 10mm 30mm rgba(16, 185, 129, 0.1);
+              margin: 5mm 0;
+              display: inline-block;
             }
             .qr-image {
-              width: 80mm;
-              height: 80mm;
+              width: 75mm;
+              height: 75mm;
               display: block;
             }
             
-            .cta-container {
-              margin-top: 5mm;
-            }
             .cta-title {
               font-family: 'Space Grotesk', sans-serif;
-              font-size: 18pt;
+              font-size: 16pt;
               font-weight: 800;
               color: #10b981;
               margin: 0;
@@ -181,43 +183,43 @@ export function printQR() {
               letter-spacing: 0.8mm;
             }
             .cta-subtitle {
-              font-size: 12pt;
+              font-size: 11pt;
               color: #444;
-              margin-top: 3mm;
+              margin: 2mm auto 0;
               max-width: 90%;
             }
             
             .footer {
-              margin-bottom: 5mm;
               display: flex;
               flex-direction: column;
               align-items: center;
-              gap: 4mm;
+              gap: 3mm;
               width: 100%;
             }
-            .footer-line {
-              width: 50mm;
-              height: 1px;
-              background: #eee;
-              margin-bottom: 2mm;
-            }
             .tagline {
-              font-size: 9pt;
+              font-size: 8pt;
               color: #999;
               font-weight: 700;
-              letter-spacing: 0.25rem;
+              letter-spacing: 0.2rem;
               text-transform: uppercase;
             }
             .app-logo {
-              width: 60mm;
-              opacity: 1;
-              filter: grayscale(0.1);
+              width: 50mm;
+              height: auto;
+              object-contain: contain;
             }
             
             @media print {
-              body { background: white; }
-              .print-card { border: none; }
-              .qr-wrapper { border-color: #10b981 !important; -webkit-print-color-adjust: exact; }
+              body, .print-card { 
+                margin: 0; 
+                border: none;
+                box-shadow: none;
+              }
+              .qr-wrapper { 
+                border-color: #10b981 !important; 
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
+              }
             }
           </style>
         </head>
@@ -228,20 +230,17 @@ export function printQR() {
               <p class="business-info">${r.phone ? '☎️ ' + r.phone : 'DISFRUTA NUESTRO MENÚ'}</p>
             </div>
             
-            <div class="main-content">
-              <div class="qr-wrapper">
-                <img src="${qrImage}" class="qr-image">
-              </div>
-              
-              <div class="cta-container">
-                <h2 class="cta-title">Escanea el Código QR</h2>
-                <p class="cta-subtitle">Para ver nuestra carta digital y precios actualizados directamente en tu celular.</p>
-              </div>
+            <div class="qr-wrapper">
+              <img src="${qrImage}" class="qr-image">
+            </div>
+            
+            <div class="cta-container">
+              <h2 class="cta-title">Escanea el Código QR</h2>
+              <p class="cta-subtitle">Para ver nuestra carta digital y precios actualizados directamente en tu celular.</p>
             </div>
             
             <div class="footer">
-              <div class="footer-line"></div>
-              <div class="tagline">Tecnología Impulsada por</div>
+              <div class="tagline">Tecnología por</div>
               <img src="${logoUrl}" class="app-logo">
             </div>
           </div>
