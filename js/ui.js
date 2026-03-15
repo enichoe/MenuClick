@@ -309,6 +309,9 @@ export function showItemModal(categoryId = null, itemId = null) {
     document.getElementById('itemAvailable').checked = item.is_available;
     document.getElementById('itemFeatured').checked = item.is_featured;
     
+    const urlInput = document.getElementById('itemImageUrl');
+    if (urlInput) urlInput.value = item.image_url || '';
+    
     if (item.image_url) {
       state.setUploadedImageUrl(item.image_url);
       const prev = document.getElementById('itemImagePreviewImg');
@@ -320,6 +323,8 @@ export function showItemModal(categoryId = null, itemId = null) {
     if (title) title.textContent = 'Nuevo Plato';
     if (form) form.reset();
     document.getElementById('itemId').value = '';
+    const urlInput = document.getElementById('itemImageUrl');
+    if (urlInput) urlInput.value = '';
     if (categoryId && categorySelect) categorySelect.value = categoryId;
     const preview = document.getElementById('itemImagePreview');
     if (preview) preview.classList.add('hidden');

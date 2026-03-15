@@ -29,11 +29,18 @@ export async function checkAuthState(supabase) {
       .single();
     
     if (profile && profile.role === 'admin') {
-      showView('adminView');
-      // Assume window.app.initAdminData is called elsewhere or handle here
+      if (document.body.dataset.page === 'landing') {
+        window.location.href = 'admin.html';
+      } else {
+        showView('adminView');
+      }
     } else {
-      showView('dashboardView');
-      await loadDashboardData(supabase);
+      if (document.body.dataset.page === 'landing') {
+        window.location.href = 'dashboard.html';
+      } else {
+        showView('dashboardView');
+        await loadDashboardData(supabase);
+      }
     }
   }
 }
@@ -74,10 +81,9 @@ export async function handleLogin(e, supabase) {
   closeAuthModal();
   
   if (profile && profile.role === 'admin') {
-    showView('adminView');
+    window.location.href = 'admin.html';
   } else {
-    showView('dashboardView');
-    await loadDashboardData(supabase);
+    window.location.href = 'dashboard.html';
   }
   
   showToast('¡Bienvenido de vuelta!', 'success');
@@ -158,8 +164,7 @@ export async function handleRegister(e, supabase) {
     });
   
   closeAuthModal();
-  showView('dashboardView');
-  await loadDashboardData(supabase);
+  window.location.href = 'dashboard.html';
   
   showToast('¡Cuenta creada exitosamente!', 'success');
 }

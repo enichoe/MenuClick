@@ -75,7 +75,7 @@
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-accent-light flex items-center justify-center">
             <i data-lucide="qr-code" class="w-6 h-6 text-black"></i>
           </div>
-          <span class="font-display font-bold text-xl">MenuQR Pro</span>
+          <span class="font-display font-bold text-xl">MenuClick</span>
         </a>
         
         <nav class="space-y-2">
@@ -303,6 +303,54 @@
           <input type="text" id="categoryName" class="input-field" placeholder="Nombre" required>
           <textarea id="categoryDesc" class="input-field" rows="2" placeholder="Descripción"></textarea>
           <button type="submit" class="btn-primary w-full">Guardar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="itemModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="p-6">
+        <h3 id="itemModalTitle" class="font-display text-xl font-bold mb-4">Nuevo Plato</h3>
+        <form id="itemForm" class="space-y-4">
+          <input type="hidden" id="itemId">
+          <input type="hidden" id="itemFeatured">
+          <div>
+            <label class="block text-sm font-medium mb-2">Categoría</label>
+            <select id="itemCategory" class="input-field" required></select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Nombre del plato</label>
+            <input type="text" id="itemName" class="input-field" placeholder="Ej: Pizza Margherita" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Descripción</label>
+            <textarea id="itemDesc" class="input-field" rows="2" placeholder="Ingredientes..."></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Precio</label>
+              <input type="number" id="itemPrice" class="input-field" placeholder="0.00" step="0.01" required>
+            </div>
+            <div class="flex items-end pb-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="itemAvailable" checked class="w-4 h-4 rounded border-surface-400 bg-surface-300 text-accent">
+                <span class="text-sm">Disponible</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">URL de Imagen</label>
+            <input type="url" id="itemImageUrl" class="input-field" placeholder="https://ejemplo.com/imagen.jpg">
+            <div id="itemImagePreview" class="hidden mt-2">
+              <img id="itemImagePreviewImg" src="" class="w-full h-32 object-cover rounded-xl mt-2 border border-surface-400">
+            </div>
+          </div>
+
+          <div class="flex gap-3 pt-4">
+            <button type="button" onclick="window.app.ui.closeItemModal()" class="btn-secondary flex-1">Cancelar</button>
+            <button type="submit" class="btn-primary flex-1">Guardar</button>
+          </div>
         </form>
       </div>
     </div>

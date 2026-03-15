@@ -121,98 +121,73 @@
               </a>
             </div>
           </div>
-          <body class="min-h-screen flex items-center justify-center p-4">
+          <div class="relative flex justify-center max-w-sm mx-auto lg:max-w-none">
+            <div class="animate-float">
+              <!-- Teléfono Móvil (Mockup) -->
+              <div class="relative w-[280px] sm:w-[320px]">
+                <!-- Marco del teléfono -->
+                <div class="bg-surface-300 rounded-[45px] p-2 border-4 border-surface-400 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.7)]">
+                  <!-- Pantalla -->
+                  <div class="bg-surface-50 rounded-[35px] overflow-hidden border border-surface-400">
+                    <!-- Contenido App -->
+                    <div class="p-5 bg-surface-100 min-h-[480px] flex flex-col">
+                      <!-- Cabecera -->
+                      <div class="text-center mb-6 mt-4">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-accent to-accent-light mb-3 flex items-center justify-center shadow-lg shadow-accent/20">
+                          <i data-lucide="utensils" class="w-8 h-8 text-black"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-xl text-white">La Pizzería</h3>
+                        <p class="text-[10px] text-surface-500 uppercase tracking-widest">Menú Digital Premium</p>
+                      </div>
 
-  <!-- Contenedor Principal -->
-  <div class="relative flex justify-center">
-    <div class="animate-float">
-      
-      <!-- Teléfono Móvil (Card Principal) -->
-      <div class="relative w-[300px] sm:w-[340px]">
-        
-        <!-- Marco del teléfono con sombras mejoradas -->
-        <div class="bg-slate-800 rounded-[40px] p-3 border-4 border-slate-900 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-          
-          <!-- Pantalla interna -->
-          <div class="bg-slate-100 rounded-[32px] overflow-hidden">
-            
-            <!-- Contenido de la App -->
-            <div class="p-5 bg-white min-h-[520px] flex flex-col">
-              
-              -- Cabecera de la App --
-              <div class="text-center mb-6 mt-4">
-                <!-- Logo con gradiente (Usando colores estándar orange/red) -->
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 mb-3 flex items-center justify-center shadow-lg">
-                   <span class="text-white text-3xl">🍕</span>
+                      <!-- Lista -->
+                      <div class="space-y-3 flex-1">
+                        <div class="bg-surface-200 rounded-2xl p-3 flex gap-3 border border-surface-300 hover:border-accent/40 transition-colors">
+                          <div class="w-14 h-14 rounded-xl bg-surface-400 flex-shrink-0 flex items-center justify-center text-xl shadow-inner">🍕</div>
+                          <div class="flex-1 flex flex-col justify-center">
+                            <h4 class="font-semibold text-white text-sm">Margherita</h4>
+                            <p class="text-[10px] text-surface-500 line-clamp-1">Salsa, mozzarella, albahaca fresca</p>
+                            <span class="text-accent font-bold text-xs mt-1">$12.99</span>
+                          </div>
+                        </div>
+
+                        <div class="bg-surface-200 rounded-2xl p-3 flex gap-3 border border-surface-300 hover:border-accent/40 transition-colors">
+                          <div class="w-14 h-14 rounded-xl bg-surface-400 flex-shrink-0 flex items-center justify-center text-xl shadow-inner">🥓</div>
+                          <div class="flex-1 flex flex-col justify-center">
+                            <h4 class="font-semibold text-white text-sm">Bacon Especial</h4>
+                            <p class="text-[10px] text-surface-500 line-clamp-1">Tocino, BBQ, queso cheddar</p>
+                            <span class="text-accent font-bold text-xs mt-1">$15.50</span>
+                          </div>
+                        </div>
+
+                        <div class="bg-surface-200 rounded-2xl p-3 flex gap-3 border border-surface-300 hover:border-accent/40 transition-colors">
+                          <div class="w-14 h-14 rounded-xl bg-surface-400 flex-shrink-0 flex items-center justify-center text-xl shadow-inner">🥤</div>
+                          <div class="flex-1 flex flex-col justify-center">
+                            <h4 class="font-semibold text-white text-sm">Bebida Fría</h4>
+                            <p class="text-[10px] text-surface-500 line-clamp-1">Refrescos de 500ml</p>
+                            <span class="text-accent font-bold text-xs mt-1">$2.50</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Botón -->
+                      <div class="mt-4 pt-4 border-t border-surface-300">
+                         <div class="w-full bg-accent text-black text-[10px] py-2.5 rounded-xl text-center font-bold shadow-lg shadow-accent/20">
+                           VER MENÚ COMPLETO
+                         </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <h3 class="font-extrabold text-xl text-slate-800">La Pizzería</h3>
-                <p class="text-sm text-slate-400 font-medium">Auténtica pizza italiana</p>
+
+                <!-- QR Flotante -->
+                <div class="absolute -right-6 bottom-16 bg-white p-2 rounded-xl shadow-2xl border border-surface-200 scale-90 sm:scale-100 animate-float" style="animation-delay: -2s;">
+                  <div id="heroQR" class="w-20 h-20"></div>
+                  <div class="text-[8px] text-center font-bold text-slate-800 mt-1 tracking-tighter">ESCANÉAME</div>
+                </div>
               </div>
-
-              -- Lista de productos --
-              <div class="space-y-3 flex-1">
-                
-                <!-- Producto 1 -->
-                <div class="bg-slate-50 rounded-2xl p-3 flex gap-4 border border-slate-100 hover:border-orange-200 transition-all">
-                  <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-slate-200 to-slate-300 flex-shrink-0 overflow-hidden flex items-center justify-center text-2xl">🍕</div>
-                  <div class="flex-1 flex flex-col justify-center">
-                    <h4 class="font-semibold text-slate-800">Margherita</h4>
-                    <p class="text-xs text-slate-500 line-clamp-2">Salsa, mozzarella, albahaca fresca</p>
-                    <span class="text-orange-600 font-bold text-sm mt-1">$12.99</span>
-                  </div>
-                </div>
-
-                <!-- Producto 2 (Agregué otro para que se vea más lleno) -->
-                <div class="bg-slate-50 rounded-2xl p-3 flex gap-4 border border-slate-100 hover:border-orange-200 transition-all">
-                  <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-slate-200 to-slate-300 flex-shrink-0 overflow-hidden flex items-center justify-center text-2xl">🥓</div>
-                  <div class="flex-1 flex flex-col justify-center">
-                    <h4 class="font-semibold text-slate-800">Bacon Especial</h4>
-                    <p class="text-xs text-slate-500 line-clamp-2">Tocino crujiente, BBQ, queso cheddar</p>
-                    <span class="text-orange-600 font-bold text-sm mt-1">$15.50</span>
-                  </div>
-                </div>
-
-                 <!-- Producto 3 -->
-                 <div class="bg-slate-50 rounded-2xl p-3 flex gap-4 border border-slate-100 hover:border-orange-200 transition-all">
-                  <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-slate-200 to-slate-300 flex-shrink-0 overflow-hidden flex items-center justify-center text-2xl">🥤</div>
-                  <div class="flex-1 flex flex-col justify-center">
-                    <h4 class="font-semibold text-slate-800">Bebida Gaseosa</h4>
-                    <p class="text-xs text-slate-500 line-clamp-2">Coca-Cola, Fanta, Sprite</p>
-                    <span class="text-orange-600 font-bold text-sm mt-1">$2.50</span>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Botón inferior -->
-              <button class="w-full mt-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-                Ver Menú Completo
-              </button>
-
             </div>
           </div>
-        </div>
-
-        <!-- QR Code Flotante (Ajustado posición) -->
-        <div class="absolute -right-4 -bottom-4 sm:-right-8 sm:bottom-16 bg-white p-3 rounded-2xl shadow-2xl border border-slate-100">
-          <!-- Simulación de QR con CSS puro -->
-          <div class="w-20 h-20 bg-slate-800 rounded-lg relative overflow-hidden grid grid-cols-5 grid-rows-5 gap-0.5 p-1">
-             <div class="bg-white w-full h-full col-span-2 row-span-2 rounded-sm"></div>
-             <div class="bg-white w-full h-full col-span-2 row-span-2 rounded-sm"></div>
-             <div class="bg-white w-full h-full"></div>
-             <div class="bg-white w-full h-full"></div>
-             <div class="bg-white w-full h-full"></div>
-             <div class="bg-white w-full h-full"></div>
-             <div class="bg-white w-full h-full"></div>
-             <div class="bg-white w-full h-full col-span-2 row-span-2 rounded-sm"></div>
-          </div>
-          <p class="text-center text-[8px] font-bold text-slate-400 mt-1 uppercase tracking-wider">Escanéame</p>
-        </div>
-        
-      </div>
-    </div>
-  </div>
-        </div>
       </div>
     </section>
   </div>

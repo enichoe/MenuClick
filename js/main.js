@@ -199,14 +199,15 @@ async function handleCategorySubmit(e) {
 async function handleItemSubmit(e) {
   e.preventDefault();
   const id = document.getElementById('itemId').value;
+  const imageUrl = document.getElementById('itemImageUrl').value;
   const itemData = {
     category_id: document.getElementById('itemCategory').value,
     name: document.getElementById('itemName').value,
     description: document.getElementById('itemDesc').value,
     price: parseFloat(document.getElementById('itemPrice').value),
     is_available: document.getElementById('itemAvailable').checked,
-    is_featured: document.getElementById('itemFeatured').checked,
-    image_url: state.uploadedImageUrl
+    is_featured: document.getElementById('itemFeatured')?.checked || false,
+    image_url: imageUrl || state.uploadedImageUrl
   };
   
   if (id) {
