@@ -38,8 +38,8 @@ export function generateDashboardQR() {
     const container = document.getElementById(id);
     if (!container) return;
     
-    // El objeto global de la librería es QRCode
-    const qrLib = window.QRCode || (typeof QRCode !== 'undefined' ? QRCode : null);
+    // Detección robusta de la librería (puede estar como QRCode o qrcode)
+    const qrLib = window.QRCode || window.qrcode || (typeof QRCode !== 'undefined' ? QRCode : (typeof qrcode !== 'undefined' ? qrcode : null));
     
     if (qrLib) {
       container.innerHTML = '';
