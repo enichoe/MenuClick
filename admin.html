@@ -62,47 +62,90 @@
         </div>
       </header>
       
-      <main class="max-w-7xl mx-auto p-6">
-        <!-- Stats -->
-        <div class="grid sm:grid-cols-4 gap-4 mb-8">
-          <div class="stat-card">
-            <p class="text-sm text-surface-500">Restaurantes</p>
+      <main class="max-w-7xl mx-auto p-4 sm:p-6 pb-20">
+        <!-- Dashboard Header Stats -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 stagger-children">
+          <div class="stat-card group hover:border-accent/40 transition-colors">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase tracking-widest text-surface-500">Total Tiendas</span>
+              <div class="p-2 bg-accent/10 rounded-lg text-accent"><i data-lucide="store" class="w-4 h-4"></i></div>
+            </div>
             <p id="adminStatRestaurants" class="font-display text-3xl font-bold">0</p>
           </div>
-          <div class="stat-card">
-            <p class="text-sm text-surface-500">Platos totales</p>
-            <p id="adminStatItems" class="font-display text-3xl font-bold">0</p>
+          <div class="stat-card group hover:border-coral/40 transition-colors">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase tracking-widest text-surface-500">Tiendas Activas</span>
+              <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-500"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
+            </div>
+            <p id="adminStatActiveRests" class="font-display text-3xl font-bold">0</p>
           </div>
-          <div class="stat-card">
-            <p class="text-sm text-surface-500">Visitas totales</p>
+          <div class="stat-card group hover:border-amber-500/40 transition-colors">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase tracking-widest text-surface-500">Visitas Totales</span>
+              <div class="p-2 bg-amber-500/10 rounded-lg text-amber-500"><i data-lucide="eye" class="w-4 h-4"></i></div>
+            </div>
             <p id="adminStatViews" class="font-display text-3xl font-bold">0</p>
           </div>
-          <div class="stat-card">
-            <p class="text-sm text-surface-500">Scaneos totales</p>
+          <div class="stat-card group hover:border-blue-500/40 transition-colors">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase tracking-widest text-surface-500">Escaneos QR</span>
+              <div class="p-2 bg-blue-500/10 rounded-lg text-blue-500"><i data-lucide="qr-code" class="w-4 h-4"></i></div>
+            </div>
             <p id="adminStatScans" class="font-display text-3xl font-bold">0</p>
           </div>
         </div>
         
-        <!-- Table -->
-        <div class="card overflow-hidden">
-          <div class="p-4 border-b border-surface-400 flex items-center justify-between">
-            <h2 class="font-display font-semibold text-lg">Restaurantes</h2>
-            <input type="text" id="adminSearchInput" placeholder="Buscar..." class="input-field max-w-xs">
+        <!-- Management UI -->
+        <div class="card overflow-hidden animate-fadeIn">
+          <div class="p-4 sm:p-6 border-b border-surface-400">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 class="font-display font-bold text-xl mb-1">Gestión de Clientes</h2>
+                <p class="text-xs text-surface-500">Administra todas las tiendas creadas en MenuClick</p>
+              </div>
+              
+              <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative">
+                  <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500"></i>
+                  <input type="text" id="adminSearchInput" placeholder="Buscar negocio o dueño..." class="input-field pl-10 w-full sm:w-64 py-2 text-sm">
+                </div>
+                <div class="relative">
+                  <i data-lucide="calendar" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500"></i>
+                  <select id="adminDateFilter" class="input-field pl-10 pr-8 py-2 text-sm appearance-none bg-surface-300">
+                    <option value="all">Todo el tiempo</option>
+                    <option value="today">Hoy</option>
+                    <option value="week">Esta semana</option>
+                    <option value="month">Este mes</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
+          
           <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead class="bg-surface-200">
-                <tr>
-                  <th class="text-left p-4">Restaurante</th>
-                  <th class="text-left p-4">Email</th>
-                  <th class="text-left p-4">Plan</th>
-                  <th class="text-left p-4">Estado</th>
-                  <th class="text-left p-4">Fecha</th>
-                  <th class="text-left p-4">Acciones</th>
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="bg-surface-200/50 text-surface-500 text-[10px] uppercase tracking-widest font-bold">
+                  <th class="text-left p-4 border-b border-surface-400">Negocio</th>
+                  <th class="text-left p-4 border-b border-surface-400">Propietario</th>
+                  <th class="text-left p-4 border-b border-surface-400">Contacto</th>
+                  <th class="text-left p-4 border-b border-surface-400">Estado</th>
+                  <th class="text-left p-4 border-b border-surface-400">Registro</th>
+                  <th class="text-right p-4 border-b border-surface-400">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="adminRestaurantsTable"></tbody>
+              <tbody id="adminRestaurantsTable" class="divide-y divide-surface-400">
+                <!-- Data injected by JS -->
+              </tbody>
             </table>
+          </div>
+          
+          <div id="adminEmptyState" class="hidden py-20 text-center">
+            <div class="w-16 h-16 mx-auto rounded-full bg-surface-300 flex items-center justify-center mb-4">
+              <i data-lucide="inbox" class="w-8 h-8 text-surface-500"></i>
+            </div>
+            <h3 class="font-bold text-lg mb-1">No se encontraron tiendas</h3>
+            <p class="text-sm text-surface-500">Prueba ajustando tu búsqueda o filtros.</p>
           </div>
         </div>
       </main>

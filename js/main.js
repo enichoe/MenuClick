@@ -241,14 +241,65 @@ async function initAdmin() {
   const data = await api.fetchAdminData(supabaseClient);
   if (data.stats) {
     document.getElementById('adminStatRestaurants').textContent = data.stats.totalRestaurants;
-    document.getElementById('adminStatItems').textContent = data.stats.totalItems;
     document.getElementById('adminStatViews').textContent = data.stats.totalViews;
     document.getElementById('adminStatScans').textContent = data.stats.totalScans;
+    
+    // Calculate active restaurants
+    const activeCount = data.restaurants.filter(r => r.is_active).length;
+    const activeEl = document.getElementById('adminStatActiveRests');
+    if (activeEl) activeEl.textContent = activeCount;
   }
   
   if (data.restaurants) {
+    state.setAdminRestaurants(data.restaurants);
     ui.renderAdminRestaurants(data.restaurants);
   }
+
+  // Admin Specific Listeners (only if they exist)
+  const searchInput = document.getElementById('adminSearchInput');
+  const dateFilter = document.getElementById('adminDateFilter');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', utils.debounce(() => filterAdminData(), 300));
+  }
+  if (dateFilter) {
+    dateFilter.addEventListener('change', () => filterAdminData());
+  }
+}
+
+function filterAdminData() {
+  const query = document.getElementById('adminSearchInput').value.toLowerCase();
+  const dateRange = document.getElementById('adminDateFilter').value;
+  
+  let filtered = state.adminRestaurants.filter(r => {
+    const profile = r.profiles || {};
+    const matchesSearch = 
+      r.name.toLowerCase().includes(query) || 
+      r.slug.toLowerCase().includes(query) ||
+      (profile.full_name || '').toLowerCase().includes(query) ||
+      (profile.email || '').toLowerCase().includes(query);
+      
+    if (!matchesSearch) return false;
+    
+    // Date filter
+    if (dateRange === 'all') return true;
+    
+    const createdDate = new Date(r.created_at);
+    const now = new Date();
+    
+    if (dateRange === 'today') {
+      return createdDate.toDateString() === now.toDateString();
+    } else if (dateRange === 'week') {
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      return createdDate >= weekAgo;
+    } else if (dateRange === 'month') {
+      return createdDate.getMonth() === now.getMonth() && createdDate.getFullYear() === now.getFullYear();
+    }
+    
+    return true;
+  });
+  
+  ui.renderAdminRestaurants(filtered);
 }
 
 // ============ RE-IMPLEMENTED HANDLERS ============

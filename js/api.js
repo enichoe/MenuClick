@@ -168,7 +168,7 @@ export async function fetchAdminData(supabase) {
   if (!supabase) return {};
   
   const [restsRes, countRes, itemsCountRes, viewsCountRes, qrStatsRes] = await Promise.all([
-    handle(supabase.from('restaurants').select('*, profiles:owner_id(email)').order('created_at', { ascending: false })),
+    handle(supabase.from('restaurants').select('*, profiles:owner_id(full_name, email, phone)').order('created_at', { ascending: false })),
     handle(supabase.from('restaurants').select('*', { count: 'exact', head: true })),
     handle(supabase.from('menu_items').select('*', { count: 'exact', head: true })),
     handle(supabase.from('menu_views').select('*', { count: 'exact', head: true })),

@@ -13,6 +13,7 @@ export const state = {
   editingItemId: null,
   confirmCallback: null,
   uploadedImageUrl: null,
+  adminRestaurants: [],
   
   // Setters
   setUser(user) { this.currentUser = user; },
@@ -21,5 +22,6 @@ export const state = {
   setMenu(menu) { this.currentMenu = menu; },
   setCategories(cats) { this.categories = cats; },
   setItems(items) { this.menuItems = items; },
-  setUploadedImageUrl(url) { this.uploadedImageUrl = url; }
+  setUploadedImageUrl(url) { this.uploadedImageUrl = url; },
+  setAdminRestaurants(rests) { this.adminRestaurants = rests; }
 };

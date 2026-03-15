@@ -423,46 +423,78 @@ export function closeCategoryModal() {
  */
 export function renderAdminRestaurants(restaurants) {
   const tbody = document.getElementById('adminRestaurantsTable');
+  const emptyState = document.getElementById('adminEmptyState');
   if (!tbody) return;
   
-  tbody.innerHTML = restaurants.map(r => `
-    <tr class="border-t border-surface-400 hover:bg-surface-200">
-      <td class="p-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg bg-surface-400 flex items-center justify-center">
-            <i data-lucide="store" class="w-5 h-5"></i>
+  if (restaurants.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyState) emptyState.classList.remove('hidden');
+    return;
+  }
+  
+  if (emptyState) emptyState.classList.add('hidden');
+  
+  tbody.innerHTML = restaurants.map(r => {
+    const profile = r.profiles || {};
+    const WhatsAppUrl = profile.phone ? `https://wa.me/${profile.phone.replace(/\D/g,'')}?text=Hola%20${encodeURIComponent(profile.full_name || '')},%20te%20contacto%20de%20MenuClick` : '#';
+    const emailUrl = `mailto:${profile.email}?subject=Consulta de MenuClick`;
+    
+    return `
+      <tr class="hover:bg-surface-200/50 transition-colors group">
+        <td class="p-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-surface-300 flex items-center justify-center text-surface-500 group-hover:bg-accent/10 group-hover:text-accent transition-colors">
+              <i data-lucide="store" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="font-bold text-white text-sm">${sanitize(r.name)}</p>
+              <p class="text-[10px] text-surface-500 uppercase tracking-tighter">slug: ${sanitize(r.slug)}</p>
+            </div>
           </div>
-          <div>
-            <p class="font-medium">${sanitize(r.name)}</p>
-            <p class="text-xs text-surface-500">/${sanitize(r.slug)}</p>
+        </td>
+        <td class="p-4">
+          <div class="flex flex-col">
+            <span class="text-sm font-medium text-white">${sanitize(profile.full_name || 'N/A')}</span>
+            <span class="text-xs text-surface-500">${sanitize(profile.email || 'N/A')}</span>
           </div>
-        </div>
-      </td>
-      <td class="p-4 text-sm">${r.profiles?.email || '-'}</td>
-      <td class="p-4">
-        <span class="px-2 py-1 rounded-full text-xs font-medium ${r.plan === 'pro' ? 'bg-accent/20 text-accent' : r.plan === 'business' ? 'bg-coral/20 text-coral' : 'bg-surface-400 text-surface-500'}">
-          ${r.plan || 'free'}
-        </span>
-      </td>
-      <td class="p-4">
-        <span class="flex items-center gap-2 text-sm">
-          <span class="w-2 h-2 rounded-full ${r.is_active ? 'bg-accent' : 'bg-red-500'}"></span>
-          ${r.is_active ? 'Activo' : 'Inactivo'}
-        </span>
-      </td>
-      <td class="p-4 text-sm text-surface-500">${new Date(r.created_at).toLocaleDateString()}</td>
-      <td class="p-4">
-        <div class="flex gap-2">
-          <button onclick="window.app.api.toggleRestaurantStatus(window.app.supabaseClient, '${r.id}', ${!r.is_active}).then(() => window.app.initAdmin())" class="p-2 hover:bg-surface-400 rounded-lg">
-            <i data-lucide="${r.is_active ? 'eye-off' : 'eye'}" class="w-4 h-4"></i>
-          </button>
-          <button onclick="window.app.ui.adminDeleteRestaurant('${r.id}')" class="p-2 hover:bg-red-500/10 text-red-500 rounded-lg">
-            <i data-lucide="trash-2" class="w-4 h-4"></i>
-          </button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
+        </td>
+        <td class="p-4">
+          <div class="flex items-center gap-2">
+            ${profile.phone ? `
+              <a href="${WhatsAppUrl}" target="_blank" class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="WhatsApp">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+              </a>
+            ` : ''}
+            <a href="${emailUrl}" class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition-all shadow-sm" title="Email">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </td>
+        <td class="p-4">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${r.is_active ? 'bg-accent/10 text-accent' : 'bg-red-500/10 text-red-500'}">
+            <span class="w-1.5 h-1.5 rounded-full ${r.is_active ? 'bg-accent' : 'bg-red-500'}"></span>
+            ${r.is_active ? 'Activo' : 'Pausado'}
+          </span>
+        </td>
+        <td class="p-4 text-xs text-surface-500">
+          ${new Date(r.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
+        </td>
+        <td class="p-4">
+          <div class="flex items-center justify-end gap-2">
+            <a href="menu.html?s=${r.slug}" target="_blank" class="p-2 hover:bg-surface-400 rounded-lg transition-colors text-surface-500" title="Ver Tienda">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+            </a>
+            <button onclick="window.app.api.toggleRestaurantStatus(window.app.supabaseClient, '${r.id}', ${!r.is_active}).then(() => window.app.initAdmin())" class="p-2 hover:bg-surface-400 rounded-lg transition-colors text-surface-500" title="${r.is_active ? 'Desactivar' : 'Activar'}">
+              <i data-lucide="${r.is_active ? 'power' : 'play-circle'}" class="w-4 h-4"></i>
+            </button>
+            <button onclick="window.app.ui.adminDeleteRestaurant('${r.id}')" class="p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors" title="Eliminar">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
   
   if (window.lucide) window.lucide.createIcons();
 }
