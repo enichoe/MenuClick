@@ -453,14 +453,14 @@ export function renderAdminRestaurants(restaurants) {
             </div>
           </div>
         </td>
-        <td class="p-4">
+        <td class="p-4 hidden sm:table-cell">
           <div class="flex flex-col">
             <span class="text-sm font-medium text-white">${sanitize(profile.full_name || 'N/A')}</span>
             <span class="text-xs text-surface-500">${sanitize(profile.email || 'N/A')}</span>
           </div>
         </td>
         <td class="p-4">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5 sm:gap-2">
             ${restaurantPhone ? `
               <a href="${WhatsAppUrl}" target="_blank" class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="WhatsApp">
                 <i data-lucide="message-circle" class="w-4 h-4"></i>
@@ -471,17 +471,17 @@ export function renderAdminRestaurants(restaurants) {
             </a>
           </div>
         </td>
-        <td class="p-4">
+        <td class="p-4 hidden lg:table-cell">
           <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${r.is_active ? 'bg-accent/10 text-accent' : 'bg-red-500/10 text-red-500'}">
             <span class="w-1.5 h-1.5 rounded-full ${r.is_active ? 'bg-accent' : 'bg-red-500'}"></span>
             ${r.is_active ? 'Activo' : 'Pausado'}
           </span>
         </td>
-        <td class="p-4 text-xs text-surface-500">
+        <td class="p-4 text-xs text-surface-500 hidden lg:table-cell">
           ${new Date(r.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
         </td>
         <td class="p-4">
-          <div class="flex items-center justify-end gap-2">
+          <div class="flex items-center justify-end gap-1 sm:gap-2">
             <a href="menu.html?s=${r.slug}" target="_blank" class="p-2 hover:bg-surface-400 rounded-lg transition-colors text-surface-500" title="Ver Tienda">
               <i data-lucide="external-link" class="w-4 h-4"></i>
             </a>
@@ -524,10 +524,21 @@ export function deleteItem(id) {
 }
 
 export function adminDeleteRestaurant(id) {
-  showConfirm('Eliminar Negocio', 'Acción irreversible.', async () => {
-    await window.app.supabaseClient.from('restaurants').delete().eq('id', id);
-    showToast('Negocio eliminado');
-    window.app.initAdmin();
+  showConfirm('¿Eliminar esta tienda?', 'Esta acción borrará todos los datos asociados. No se puede deshacer.', async () => {
+    // Attempt full delete. If CASCADE is not on, this might need more logic or just let the user know.
+    const { error } = await window.app.supabaseClient.from('restaurants').delete().eq('id', id);
+    
+    if (error) {
+      console.error('Delete error:', error);
+      if (error.code === '23503') {
+        showToast('No se puede eliminar: tiene datos asociados. Contacta a soporte técnico.', 'error');
+      } else {
+        showToast('Error al eliminar: ' + error.message, 'error');
+      }
+    } else {
+      showToast('Tienda eliminada permanentemente', 'success');
+      window.app.initAdmin();
+    }
   });
 }
 /**
