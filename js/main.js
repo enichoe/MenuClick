@@ -68,11 +68,18 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 function setupGlobalListeners() {
   const sidebarToggle = document.getElementById('sidebarToggle');
-  if (sidebarToggle) {
-    sidebarToggle.addEventListener('click', () => {
-      document.getElementById('sidebar').classList.toggle('open');
-    });
-  }
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  const sidebarClose = document.getElementById('sidebarClose');
+
+  const toggleSidebar = () => {
+    if (sidebar) sidebar.classList.toggle('open');
+    if (sidebarOverlay) sidebarOverlay.classList.toggle('hidden');
+  };
+
+  if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+  if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+  if (sidebarClose) sidebarClose.addEventListener('click', toggleSidebar);
   
   // Forms
   const loginForm = document.getElementById('loginForm');
@@ -196,6 +203,32 @@ async function initPublicMenu() {
   const data = await api.fetchPublicMenu(supabaseClient, slug);
   if (data && data.restaurant) {
     ui.renderPublicMenu(data.restaurant, data.categories || [], data.items || [], supabaseClient);
+    
+    // Add ScrollSpy for Categories
+    window.addEventListener('scroll', utils.debounce(() => {
+      const categories = data.categories || [];
+      const scrollPos = window.scrollY + 150; // Offset for sticky nav + some margin
+      
+      let currentActiveId = null;
+      for (const cat of categories) {
+        const element = document.getElementById('category-' + cat.id);
+        if (element && element.offsetTop <= scrollPos) {
+          currentActiveId = cat.id;
+        }
+      }
+      
+      if (currentActiveId) {
+        document.querySelectorAll('.category-tab').forEach(btn => {
+          const isActive = btn.dataset.categoryId === currentActiveId;
+          if (btn.classList.contains('active') !== isActive) {
+            btn.classList.toggle('active', isActive);
+            if (isActive) {
+               btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+          }
+        });
+      }
+    }, 100));
   } else {
     ui.showToast('Menú no encontrado', 'error');
   }
@@ -361,4 +394,12 @@ function showDashboardSection(section) {
   const titles = { overview: 'Panel Principal', menu: 'Mi Menú', qr: 'Código QR', stats: 'Estadísticas', settings: 'Configuración' };
   const pageTitle = document.getElementById('pageTitle');
   if (pageTitle) pageTitle.textContent = titles[section] || 'Dashboard';
+
+  // Close sidebar on mobile after selection
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (sidebar && window.innerWidth < 1024) {
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.add('hidden');
+  }
 }

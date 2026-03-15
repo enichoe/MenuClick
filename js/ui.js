@@ -277,8 +277,8 @@ export function renderPublicMenu(restaurant, publicCategories, publicItems, supa
     tabsContainer.innerHTML = publicCategories.map((cat, index) => `
       <button 
         onclick="window.app.utils.scrollToCategory('${cat.id}')" 
-        class="px-5 py-2.5 rounded-full text-sm font-bold transition-all ${index === 0 ? 'bg-accent text-black scale-105 shadow-lg shadow-accent/20' : 'bg-surface-300 text-white hover:bg-surface-400'}"
-        style="${index === 0 && restaurant.button_color ? `background-color: ${restaurant.button_color}` : ''}"
+        class="category-tab px-5 py-2.5 rounded-full text-sm font-bold transition-all ${index === 0 ? 'active' : ''}"
+        data-category-id="${cat.id}"
       >
         ${sanitize(cat.name)}
       </button>

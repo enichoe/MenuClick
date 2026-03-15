@@ -44,7 +44,7 @@ export async function generateSlug(name, supabase) {
 export function scrollToCategory(categoryId) {
   const element = document.getElementById('category-' + categoryId);
   if (element) {
-    const headerOffset = 80;
+    const headerOffset = 100;
     const elementPosition = element.getBoundingClientRect().top;
     const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -55,14 +55,7 @@ export function scrollToCategory(categoryId) {
   }
   
   // Update active tab styling
-  document.querySelectorAll('#categoryTabs button').forEach(btn => {
-    btn.classList.remove('bg-accent', 'text-black');
-    btn.classList.add('bg-surface-300', 'text-white');
-    
-    // If this button corresponds to the category, highlight it
-    if (btn.getAttribute('onclick')?.includes(categoryId)) {
-      btn.classList.remove('bg-surface-300', 'text-white');
-      btn.classList.add('bg-accent', 'text-black');
-    }
+  document.querySelectorAll('.category-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.categoryId === categoryId);
   });
 }
