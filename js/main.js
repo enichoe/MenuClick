@@ -240,14 +240,18 @@ async function initAdmin() {
   
   const data = await api.fetchAdminData(supabaseClient);
   if (data.stats) {
-    document.getElementById('adminStatRestaurants').textContent = data.stats.totalRestaurants;
-    document.getElementById('adminStatViews').textContent = data.stats.totalViews;
-    document.getElementById('adminStatScans').textContent = data.stats.totalScans;
+    const elRests = document.getElementById('adminStatRestaurants');
+    const elViews = document.getElementById('adminStatViews');
+    const elScans = document.getElementById('adminStatScans');
+    const elActive = document.getElementById('adminStatActiveRests');
+
+    if (elRests) elRests.textContent = data.stats.totalRestaurants || 0;
+    if (elViews) elViews.textContent = data.stats.totalViews || 0;
+    if (elScans) elScans.textContent = data.stats.totalScans || 0;
     
     // Calculate active restaurants
-    const activeCount = data.restaurants.filter(r => r.is_active).length;
-    const activeEl = document.getElementById('adminStatActiveRests');
-    if (activeEl) activeEl.textContent = activeCount;
+    const activeCount = data.restaurants ? data.restaurants.filter(r => r.is_active).length : 0;
+    if (elActive) elActive.textContent = activeCount;
   }
   
   if (data.restaurants) {

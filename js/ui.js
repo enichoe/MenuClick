@@ -436,8 +436,9 @@ export function renderAdminRestaurants(restaurants) {
   
   tbody.innerHTML = restaurants.map(r => {
     const profile = r.profiles || {};
-    const WhatsAppUrl = profile.phone ? `https://wa.me/${profile.phone.replace(/\D/g,'')}?text=Hola%20${encodeURIComponent(profile.full_name || '')},%20te%20contacto%20de%20MenuClick` : '#';
-    const emailUrl = `mailto:${profile.email}?subject=Consulta de MenuClick`;
+    const restaurantPhone = r.phone || profile.phone || '';
+    const WhatsAppUrl = restaurantPhone ? `https://wa.me/${restaurantPhone.replace(/\D/g,'')}?text=Hola%20${encodeURIComponent(profile.full_name || '')},%20te%20contacto%20de%20MenuClick` : '#';
+    const emailUrl = `mailto:${profile.email || ''}?subject=Consulta de MenuClick`;
     
     return `
       <tr class="hover:bg-surface-200/50 transition-colors group">
@@ -460,7 +461,7 @@ export function renderAdminRestaurants(restaurants) {
         </td>
         <td class="p-4">
           <div class="flex items-center gap-2">
-            ${profile.phone ? `
+            ${restaurantPhone ? `
               <a href="${WhatsAppUrl}" target="_blank" class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="WhatsApp">
                 <i data-lucide="message-circle" class="w-4 h-4"></i>
               </a>
