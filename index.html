@@ -40,7 +40,7 @@
               200: '#1a1a1d',
               300: '#242428',
               400: '#2e2e33',
-              500: '#3d3d42',
+              500: '#94a3b8',
             },
             accent: {
               DEFAULT: '#10b981',
@@ -73,20 +73,19 @@
     <nav class="fixed top-0 left-0 right-0 z-50 glass">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-          <a href="#" class="flex items-center gap-3">
-            <img src="logo.png" alt="MenuClick Logo" class="w-10 h-10 object-contain">
-            <span class="font-display font-bold text-xl">MenuClick</span>
+          <a href="#" class="flex items-center">
+            <img src="logo.png" alt="MenuClick Logo" class="w-24 sm:w-32 h-10 sm:h-12 object-contain">
           </a>
           
           <div class="hidden md:flex items-center gap-8">
             <a href="#features" class="text-surface-500 hover:text-white transition-colors">Características</a>
             <a href="#how-it-works" class="text-surface-500 hover:text-white transition-colors">Cómo funciona</a>
-            <a href="#pricing" class="text-surface-500 hover:text-white transition-colors">Precios</a>
+            <!--<a href="#pricing" class="text-surface-500 hover:text-white transition-colors">Precios</a>-->
           </div>
           
-          <div class="flex items-center gap-2 sm:gap-4">
-            <button onclick="window.app.ui.showAuthModal('login')" class="btn-secondary text-sm sm:text-base px-3 sm:px-6">Iniciar Sesión</button>
-            <button onclick="window.app.ui.showAuthModal('register')" class="btn-primary text-sm sm:text-base px-3 sm:px-6">Comenzar Gratis</button>
+          <div class="flex items-center gap-2 sm:gap-3">
+            <button onclick="window.app.ui.showAuthModal('login')" class="btn-secondary text-[11px] sm:text-xs px-3 sm:px-4 py-2 sm:py-2.5">Iniciar Sesión</button>
+            <button onclick="window.app.ui.showAuthModal('register')" class="btn-primary text-[11px] sm:text-xs px-3 sm:px-4 py-2 sm:py-2.5">Comenzar Gratis</button>
           </div>
         </div>
       </div>
@@ -114,7 +113,7 @@
               <button onclick="window.app.ui.showAuthModal('register')" class="btn-primary text-lg py-5 px-10 rounded-2xl">
                 Crear mi menú gratis
               </button>
-              <a href="#how-it-works" class="btn-secondary text-lg py-5 px-10 rounded-2xl flex items-center justify-center gap-2">
+              <a href="https://menu-click.vercel.app/menu?s=pizzeria-mathias" target="_blank" class="btn-secondary text-lg py-5 px-10 rounded-2xl flex items-center justify-center gap-2">
                 <i data-lucide="play" class="w-5 h-5 fill-current"></i>
                 Ver demostración
               </a>
@@ -251,7 +250,7 @@
                   <i data-lucide="x-circle" class="w-6 h-6 text-red-500"></i>
                 </div>
                 <div>
-                  <h4 class="font-bold text-white text-lg mb-1">Inhigiénicos y desgastados</h4>
+                  <h4 class="font-bold text-white text-lg mb-1">Antihigiénicos y desgastados</h4>
                   <p class="text-surface-500">Evita el contacto físico innecesario y ofrece seguridad a tus clientes.</p>
                 </div>
               </div>
