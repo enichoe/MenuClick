@@ -442,32 +442,32 @@ export function renderAdminRestaurants(restaurants) {
     
     return `
       <tr class="hover:bg-surface-200/50 transition-colors group">
-        <td class="p-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-surface-300 flex items-center justify-center text-surface-500 group-hover:bg-accent/10 group-hover:text-accent transition-colors">
-              <i data-lucide="store" class="w-5 h-5"></i>
+        <td class="p-3 sm:p-4">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-surface-300 flex items-center justify-center text-surface-500 group-hover:bg-accent/10 group-hover:text-accent transition-colors flex-shrink-0">
+              <i data-lucide="store" class="w-4 h-4 sm:w-5 sm:h-5"></i>
             </div>
-            <div>
-              <p class="font-bold text-white text-sm">${sanitize(r.name)}</p>
-              <p class="text-[10px] text-surface-500 uppercase tracking-tighter">slug: ${sanitize(r.slug)}</p>
+            <div class="min-w-0">
+              <p class="font-bold text-white text-xs sm:text-sm truncate">${sanitize(r.name)}</p>
+              <p class="text-[9px] sm:text-[10px] text-surface-500 uppercase tracking-tighter truncate">/${sanitize(r.slug)}</p>
             </div>
           </div>
         </td>
-        <td class="p-4 hidden sm:table-cell">
+        <td class="p-4 hidden md:table-cell">
           <div class="flex flex-col">
             <span class="text-sm font-medium text-white">${sanitize(profile.full_name || 'N/A')}</span>
             <span class="text-xs text-surface-500">${sanitize(profile.email || 'N/A')}</span>
           </div>
         </td>
-        <td class="p-4">
-          <div class="flex items-center gap-1.5 sm:gap-2">
+        <td class="p-3 sm:p-4">
+          <div class="flex items-center gap-1 sm:gap-2">
             ${restaurantPhone ? `
-              <a href="${WhatsAppUrl}" target="_blank" class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="WhatsApp">
-                <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <a href="${WhatsAppUrl}" target="_blank" class="p-1.5 sm:p-2 bg-emerald-500/10 text-emerald-500 rounded-lg hover:bg-emerald-500 hover:text-white transition-all" title="WhatsApp">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5 sm:w-4 h-4"></i>
               </a>
             ` : ''}
-            <a href="${emailUrl}" class="p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition-all shadow-sm" title="Email">
-              <i data-lucide="mail" class="w-4 h-4"></i>
+            <a href="${emailUrl}" class="p-1.5 sm:p-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition-all" title="Email">
+              <i data-lucide="mail" class="w-3.5 h-3.5 sm:w-4 h-4"></i>
             </a>
           </div>
         </td>
@@ -478,18 +478,18 @@ export function renderAdminRestaurants(restaurants) {
           </span>
         </td>
         <td class="p-4 text-xs text-surface-500 hidden lg:table-cell">
-          ${new Date(r.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
+          ${new Date(r.created_at).toLocaleDateString()}
         </td>
-        <td class="p-4">
+        <td class="p-3 sm:p-4 text-right">
           <div class="flex items-center justify-end gap-1 sm:gap-2">
-            <a href="menu.html?s=${r.slug}" target="_blank" class="p-2 hover:bg-surface-400 rounded-lg transition-colors text-surface-500" title="Ver Tienda">
-              <i data-lucide="external-link" class="w-4 h-4"></i>
+            <a href="menu.html?s=${r.slug}" target="_blank" class="p-1.5 sm:p-2 hover:bg-surface-400 rounded-lg transition-colors text-surface-500" title="Ver Tienda">
+              <i data-lucide="external-link" class="w-3.5 h-3.5 sm:w-4 h-4"></i>
             </a>
-            <button onclick="window.app.api.toggleRestaurantStatus(window.app.supabaseClient, '${r.id}', ${!r.is_active}).then(() => window.app.initAdmin())" class="p-2 hover:bg-surface-400 rounded-lg transition-colors text-surface-500" title="${r.is_active ? 'Desactivar' : 'Activar'}">
-              <i data-lucide="${r.is_active ? 'power' : 'play-circle'}" class="w-4 h-4"></i>
+            <button onclick="window.app.api.toggleRestaurantStatus(window.app.supabaseClient, '${r.id}', ${!r.is_active}).then(() => window.app.initAdmin())" class="p-1.5 sm:p-2 hover:bg-surface-400 rounded-lg transition-colors text-surface-500" title="Pausar/Activar">
+              <i data-lucide="${r.is_active ? 'power' : 'play-circle'}" class="w-3.5 h-3.5 sm:w-4 h-4"></i>
             </button>
-            <button onclick="window.app.ui.adminDeleteRestaurant('${r.id}')" class="p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors" title="Eliminar">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <button onclick="window.app.ui.adminDeleteRestaurant('${r.id}')" class="p-1.5 sm:p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors" title="Eliminar">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5 sm:w-4 h-4"></i>
             </button>
           </div>
         </td>
@@ -525,16 +525,24 @@ export function deleteItem(id) {
 
 export function adminDeleteRestaurant(id) {
   showConfirm('¿Eliminar esta tienda?', 'Esta acción borrará todos los datos asociados. No se puede deshacer.', async () => {
-    // Attempt full delete. If CASCADE is not on, this might need more logic or just let the user know.
-    const { error } = await window.app.supabaseClient.from('restaurants').delete().eq('id', id);
+    // Try to delete and confirm row count affected
+    const { data, error, status } = await window.app.supabaseClient
+      .from('restaurants')
+      .delete()
+      .eq('id', id)
+      .select();
     
     if (error) {
       console.error('Delete error:', error);
       if (error.code === '23503') {
-        showToast('No se puede eliminar: tiene datos asociados. Contacta a soporte técnico.', 'error');
+        showToast('No se puede eliminar: tiene datos protegidos activos.', 'error');
       } else {
-        showToast('Error al eliminar: ' + error.message, 'error');
+        showToast('Error de servidor: ' + error.message, 'error');
       }
+    } else if (!data || data.length === 0) {
+      // Row exists but RLS blocked deletion or ID mismatch
+      console.warn('Delete attempted but no rows affected. Status:', status);
+      showToast('Permiso denegado: No tienes permisos para eliminar este negocio.', 'error');
     } else {
       showToast('Tienda eliminada permanentemente', 'success');
       window.app.initAdmin();
