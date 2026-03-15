@@ -175,7 +175,7 @@ export async function handleRegister(e, supabase) {
  */
 export async function handleLogout(supabase) {
   if (!supabase) {
-    showView('landingView');
+    window.location.href = 'index.html';
     return;
   }
   
@@ -186,6 +186,6 @@ export async function handleLogout(supabase) {
   state.setCategories([]);
   state.setItems([]);
   
-  showView('landingView');
+  window.location.href = 'index.html';
   showToast('Sesión cerrada', 'success');
 }
