@@ -272,22 +272,201 @@
 
         <!-- Settings Section -->
         <section id="settingsSection" class="dashboard-section hidden">
-          <h2 class="font-display text-2xl font-bold mb-6">Configuración</h2>
-          <div class="grid md:grid-cols-2 gap-8">
-            <div class="card p-6">
-              <form id="restaurantSettingsForm" class="space-y-4">
-                <div>
-                  <label class="block text-sm font-medium mb-2">Nombre del Negocio</label>
-                  <input type="text" id="settingsRestaurantName" class="input-field" placeholder="Nombre" required>
+          <h2 class="font-display text-2xl font-bold mb-6">Configuración del Negocio</h2>
+          <form id="restaurantSettingsForm" class="space-y-8">
+            <div class="grid md:grid-cols-2 gap-8">
+              <!-- Información Básica -->
+              <div class="card p-6">
+                <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2">
+                  <i data-lucide="info" class="w-5 h-5 text-accent"></i> Información Básica
+                </h3>
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium mb-2">Nombre del Negocio</label>
+                    <input type="text" id="settingsRestaurantName" class="input-field" placeholder="Nombre" required>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-2">Descripción corta</label>
+                    <textarea id="settingsRestaurantDesc" class="input-field" rows="2" placeholder="Ej: Auténtica pizza italiana"></textarea>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-2">URL del Logo (Imagen)</label>
+                    <input type="url" id="settingsLogoUrl" class="input-field" placeholder="https://...">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-2">URL de Portada (Banner)</label>
+                    <input type="url" id="settingsBannerUrl" class="input-field" placeholder="https://...">
+                  </div>
                 </div>
-                <div>
-                  <label class="block text-sm font-medium mb-2">Descripción</label>
-                  <textarea id="settingsRestaurantDesc" class="input-field" rows="3" placeholder="Descripción"></textarea>
+              </div>
+
+              <!-- Contacto y Ubicación -->
+              <div class="card p-6">
+                <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2">
+                  <i data-lucide="map-pin" class="w-5 h-5 text-cyan-500"></i> Contacto y Ubicación
+                </h3>
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium mb-2">Teléfono Público</label>
+                    <input type="tel" id="settingsPhone" class="input-field" placeholder="+51 ...">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-2">Dirección Física</label>
+                    <input type="text" id="settingsAddress" class="input-field" placeholder="Calle, Ciudad, País">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-2">Link Google Maps</label>
+                    <input type="url" id="settingsMaps" class="input-field" placeholder="https://goo.gl/maps/...">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-2">Sitio Web</label>
+                    <input type="url" id="settingsWebsite" class="input-field" placeholder="https://miweb.com">
+                  </div>
                 </div>
-                <button type="submit" class="btn-primary w-full">Guardar cambios</button>
-              </form>
+              </div>
+
+              <!-- Redes Sociales -->
+              <div class="card p-6">
+                <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2">
+                  <i data-lucide="share-2" class="w-5 h-5 text-pink-500"></i> Redes Sociales
+                </h3>
+                <div class="space-y-4">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium mb-2">WhatsApp</label>
+                      <input type="text" id="settingsWhatsapp" class="input-field" placeholder="Número">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium mb-2">Instagram</label>
+                      <input type="text" id="settingsInstagram" class="input-field" placeholder="@usuario">
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium mb-2">Facebook</label>
+                      <input type="text" id="settingsFacebook" class="input-field" placeholder="facebook.com/...">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium mb-2">TikTok</label>
+                      <input type="text" id="settingsTiktok" class="input-field" placeholder="@usuario">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Personalización -->
+              <div class="card p-6">
+                <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2">
+                  <i data-lucide="palette" class="w-5 h-5 text-coral"></i> Personalización Visual
+                </h3>
+                <div class="space-y-4">
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium mb-2">Color Principal</label>
+                      <input type="color" id="settingsPrimaryColor" class="h-12 w-full bg-surface-300 rounded-xl cursor-pointer p-1">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium mb-2">Color de Botones</label>
+                      <input type="color" id="settingsButtonColor" class="h-12 w-full bg-surface-300 rounded-xl cursor-pointer p-1">
+                    </div>
+                  </div>
+                  <p class="text-xs text-surface-500 italic">Elige colores que representen la marca de tu negocio.</p>
+                </div>
+              </div>
+              <!-- Horarios -->
+              <div class="card p-6 md:col-span-2">
+                <h3 class="font-display font-semibold text-lg mb-4 flex items-center gap-2">
+                  <i data-lucide="clock" class="w-5 h-5 text-amber-500"></i> Horario de Atención
+                </h3>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4" id="hoursGrid">
+                  <!-- Generado por JS o manual -->
+                  <div class="p-3 bg-surface-200 rounded-xl space-y-2">
+                    <span class="text-sm font-bold capitalize">Lunes</span>
+                    <div class="flex items-center gap-2">
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="lunes" data-type="open">
+                      <span class="text-xs">-</span>
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="lunes" data-type="close">
+                    </div>
+                    <label class="flex items-center gap-2 text-xs cursor-pointer">
+                      <input type="checkbox" data-day="lunes" data-type="closed" class="rounded border-surface-400 bg-surface-300"> Cerrado
+                    </label>
+                  </div>
+                  <div class="p-3 bg-surface-200 rounded-xl space-y-2">
+                    <span class="text-sm font-bold capitalize">Martes</span>
+                    <div class="flex items-center gap-2">
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="martes" data-type="open">
+                      <span class="text-xs">-</span>
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="martes" data-type="close">
+                    </div>
+                    <label class="flex items-center gap-2 text-xs cursor-pointer">
+                      <input type="checkbox" data-day="martes" data-type="closed" class="rounded border-surface-400 bg-surface-300"> Cerrado
+                    </label>
+                  </div>
+                  <div class="p-3 bg-surface-200 rounded-xl space-y-2">
+                    <span class="text-sm font-bold capitalize">Miércoles</span>
+                    <div class="flex items-center gap-2">
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="miercoles" data-type="open">
+                      <span class="text-xs">-</span>
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="miercoles" data-type="close">
+                    </div>
+                    <label class="flex items-center gap-2 text-xs cursor-pointer">
+                      <input type="checkbox" data-day="miercoles" data-type="closed" class="rounded border-surface-400 bg-surface-300"> Cerrado
+                    </label>
+                  </div>
+                  <div class="p-3 bg-surface-200 rounded-xl space-y-2">
+                    <span class="text-sm font-bold capitalize">Jueves</span>
+                    <div class="flex items-center gap-2">
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="jueves" data-type="open">
+                      <span class="text-xs">-</span>
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="jueves" data-type="close">
+                    </div>
+                    <label class="flex items-center gap-2 text-xs cursor-pointer">
+                      <input type="checkbox" data-day="jueves" data-type="closed" class="rounded border-surface-400 bg-surface-300"> Cerrado
+                    </label>
+                  </div>
+                  <div class="p-3 bg-surface-200 rounded-xl space-y-2">
+                    <span class="text-sm font-bold capitalize">Viernes</span>
+                    <div class="flex items-center gap-2">
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="viernes" data-type="open">
+                      <span class="text-xs">-</span>
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="viernes" data-type="close">
+                    </div>
+                    <label class="flex items-center gap-2 text-xs cursor-pointer">
+                      <input type="checkbox" data-day="viernes" data-type="closed" class="rounded border-surface-400 bg-surface-300"> Cerrado
+                    </label>
+                  </div>
+                  <div class="p-3 bg-surface-200 rounded-xl space-y-2">
+                    <span class="text-sm font-bold capitalize">Sábado</span>
+                    <div class="flex items-center gap-2">
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="sabado" data-type="open">
+                      <span class="text-xs">-</span>
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="sabado" data-type="close">
+                    </div>
+                    <label class="flex items-center gap-2 text-xs cursor-pointer">
+                      <input type="checkbox" data-day="sabado" data-type="closed" class="rounded border-surface-400 bg-surface-300"> Cerrado
+                    </label>
+                  </div>
+                  <div class="p-3 bg-surface-200 rounded-xl space-y-2">
+                    <span class="text-sm font-bold capitalize">Domingo</span>
+                    <div class="flex items-center gap-2">
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="domingo" data-type="open">
+                      <span class="text-xs">-</span>
+                      <input type="time" class="input-field py-1 px-2 text-xs" data-day="domingo" data-type="close">
+                    </div>
+                    <label class="flex items-center gap-2 text-xs cursor-pointer">
+                      <input type="checkbox" data-day="domingo" data-type="closed" class="rounded border-surface-400 bg-surface-300"> Cerrado
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+
+            <div class="flex justify-end">
+              <button type="submit" class="btn-primary py-4 px-12 text-lg shadow-xl shadow-accent/20">
+                Guardar Toda la Configuración
+              </button>
+            </div>
+          </form>
         </section>
       </div>
     </main>

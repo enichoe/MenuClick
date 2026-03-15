@@ -44,16 +44,44 @@
   <div id="toastContainer" class="toast-container"></div>
   
   <div id="publicMenuView" class="view active">
+    <!-- Banner Image -->
+    <div id="publicMenuBanner" class="w-full h-48 sm:h-64 overflow-hidden hidden bg-surface-200">
+      <img id="publicBannerImg" src="" alt="Portada" class="w-full h-full object-cover">
+    </div>
+
     <!-- Menu Header -->
-    <header id="publicMenuHeader" class="py-12 px-4 text-center border-b border-surface-400 bg-surface-100">
+    <header id="publicMenuHeader" class="relative -mt-12 pt-0 px-4 text-center">
       <div class="max-w-lg mx-auto">
-        <div id="publicMenuLogo" class="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-br from-accent to-accent-light mb-6 overflow-hidden">
-          <img id="publicLogoImg" src="" alt="" class="w-full h-full object-cover hidden">
+        <div id="publicMenuLogo" class="w-32 h-32 mx-auto rounded-3xl bg-surface-100 border-4 border-surface-50 p-1 mb-4 overflow-hidden shadow-2xl relative z-10">
+          <div class="w-full h-full rounded-2xl bg-gradient-to-br from-accent to-accent-light flex items-center justify-center">
+             <img id="publicLogoImg" src="" alt="" class="w-full h-full object-cover hidden">
+             <i id="publicLogoIcon" data-lucide="store" class="w-12 h-12 text-black"></i>
+          </div>
         </div>
-        <h1 id="publicMenuTitle" class="font-display text-3xl font-bold mb-3">Cargando...</h1>
-        <p id="publicMenuDesc" class="text-surface-500 text-lg"></p>
+        <h1 id="publicMenuTitle" class="font-display text-4xl font-bold mb-2">Cargando...</h1>
+        <p id="publicMenuDesc" class="text-surface-500 text-lg mb-6"></p>
+        
+        <!-- Social & Contact Links -->
+        <div id="socialLinks" class="flex flex-wrap justify-center gap-4 mb-8"></div>
       </div>
     </header>
+    
+    <!-- Info & Hours Section (Accordion or simple list) -->
+    <div class="max-w-2xl mx-auto px-4 mb-8">
+      <div class="card p-6 bg-surface-100/50 border-surface-400">
+        <div class="grid sm:grid-cols-2 gap-6 text-left">
+          <div id="publicRestaurantInfo">
+            <h3 class="flex items-center gap-2 font-bold mb-3"><i data-lucide="map-pin" class="w-4 h-4 text-cyan-500"></i> Ubicación</h3>
+            <p id="publicAddress" class="text-sm text-surface-500 mb-2">Cargando dirección...</p>
+            <a id="publicMapsLink" href="#" target="_blank" class="text-xs text-accent hover:underline hidden">Ver en Google Maps</a>
+          </div>
+          <div id="publicHoursInfo">
+            <h3 class="flex items-center gap-2 font-bold mb-3"><i data-lucide="clock" class="w-4 h-4 text-coral"></i> Horarios</h3>
+            <div id="publicHoursList" class="text-xs text-surface-500 space-y-1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     
     <!-- Category Navigation -->
     <nav id="categoryNav" class="sticky top-0 z-40 glass border-b border-surface-400 py-4 px-4 overflow-x-auto">
@@ -68,8 +96,8 @@
       </div>
     </main>
     
-    <footer class="py-12 text-center border-t border-surface-400 mt-12">
-      <p class="text-sm text-surface-500">Powered by <span class="text-accent font-semibold">MenuQR Pro</span></p>
+    <footer class="py-12 text-center border-t border-surface-400 mt-12 bg-surface-100">
+      <p class="text-sm text-surface-500">Powered by <span class="text-accent font-semibold">MenuClick</span></p>
     </footer>
   </div>
 

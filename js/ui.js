@@ -186,32 +186,94 @@ export function renderMenuContent() {
  * Render Public Menu View
  */
 export function renderPublicMenu(restaurant, publicCategories, publicItems, supabase) {
+  // 1. Personalización de colores
+  if (restaurant.primary_color) {
+    document.documentElement.style.setProperty('--accent', restaurant.primary_color);
+  }
+  
+  // 2. Banner y Logo
+  const bannerEl = document.getElementById('publicMenuBanner');
+  const bannerImg = document.getElementById('publicBannerImg');
+  if (restaurant.banner_url && bannerEl && bannerImg) {
+    bannerImg.src = restaurant.banner_url;
+    bannerEl.classList.remove('hidden');
+  }
+
+  const logoImg = document.getElementById('publicLogoImg');
+  const logoIcon = document.getElementById('publicLogoIcon');
+  if (restaurant.logo_url && logoImg) {
+    logoImg.src = restaurant.logo_url;
+    logoImg.classList.remove('hidden');
+    if (logoIcon) logoIcon.classList.add('hidden');
+  }
+
+  // 3. Información Básica
   const titleEl = document.getElementById('publicMenuTitle');
   if (titleEl) titleEl.textContent = restaurant.name;
   
   const descEl = document.getElementById('publicMenuDesc');
   if (descEl) descEl.textContent = restaurant.description || '';
-  
-  if (restaurant.logo_url) {
-    const logoImg = document.getElementById('publicLogoImg');
-    if (logoImg) {
-      logoImg.src = restaurant.logo_url;
-      logoImg.classList.remove('hidden');
-    }
+
+  const addressEl = document.getElementById('publicAddress');
+  if (addressEl) addressEl.textContent = restaurant.address || 'Dirección no disponible';
+
+  const mapsLink = document.getElementById('publicMapsLink');
+  if (mapsLink && restaurant.google_maps_url) {
+    mapsLink.href = restaurant.google_maps_url;
+    mapsLink.classList.remove('hidden');
   }
-  
+
+  // 4. Redes Sociales
+  const socialContainer = document.getElementById('socialLinks');
+  if (socialContainer) {
+    const socials = [
+      { id: 'whatsapp', icon: 'message-circle', color: 'bg-green-500', url: restaurant.whatsapp ? `https://wa.me/${restaurant.whatsapp.replace(/\D/g,'')}` : null },
+      { id: 'instagram', icon: 'instagram', color: 'bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500', url: restaurant.instagram ? `https://instagram.com/${restaurant.instagram.replace('@','')}` : null },
+      { id: 'facebook', icon: 'facebook', color: 'bg-blue-600', url: restaurant.facebook ? (restaurant.facebook.startsWith('http') ? restaurant.facebook : `https://facebook.com/${restaurant.facebook}`) : null },
+      { id: 'tiktok', icon: 'music', color: 'bg-black', url: restaurant.tiktok ? `https://tiktok.com/@${restaurant.tiktok.replace('@','')}` : null },
+      { id: 'website', icon: 'globe', color: 'bg-cyan-500', url: restaurant.website }
+    ];
+
+    socialContainer.innerHTML = socials
+      .filter(s => s.url)
+      .map(s => `
+        <a href="${s.url}" target="_blank" class="w-10 h-10 ${s.color} rounded-full flex items-center justify-center text-white shadow-lg transform hover:scale-110 transition-transform">
+          <i data-lucide="${s.icon}" class="w-5 h-5"></i>
+        </a>
+      `).join('');
+  }
+
+  // 5. Horarios
+  const hoursList = document.getElementById('publicHoursList');
+  if (hoursList && restaurant.opening_hours) {
+    const days = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+    hoursList.innerHTML = days.map(day => {
+      const h = restaurant.opening_hours[day];
+      if (!h) return '';
+      return `
+        <div class="flex justify-between gap-4">
+          <span class="capitalize font-medium">${day}</span>
+          <span>${h.closed ? '<span class="text-red-500">Cerrado</span>' : `${h.open} - ${h.close}`}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // 6. Categorías (Tabs)
   const tabsContainer = document.getElementById('categoryTabs');
   if (tabsContainer) {
     tabsContainer.innerHTML = publicCategories.map((cat, index) => `
       <button 
         onclick="window.app.utils.scrollToCategory('${cat.id}')" 
-        class="px-4 py-2 rounded-full text-sm font-medium transition-colors ${index === 0 ? 'bg-accent text-black' : 'bg-surface-300 text-white'}"
+        class="px-5 py-2.5 rounded-full text-sm font-bold transition-all ${index === 0 ? 'bg-accent text-black scale-105 shadow-lg shadow-accent/20' : 'bg-surface-300 text-white hover:bg-surface-400'}"
+        style="${index === 0 && restaurant.button_color ? `background-color: ${restaurant.button_color}` : ''}"
       >
         ${sanitize(cat.name)}
       </button>
     `).join('');
   }
   
+  // 7. Platos
   const itemsContainer = document.getElementById('publicMenuItems');
   const emptyState = document.getElementById('publicMenuEmpty');
   if (!itemsContainer) return;
@@ -229,13 +291,13 @@ export function renderPublicMenu(restaurant, publicCategories, publicItems, supa
     if (categoryItems.length === 0) return '';
     
     return `
-      <div id="category-${category.id}" class="mb-10">
-        <h2 class="font-display text-2xl font-bold mb-6 sticky top-16 bg-surface-50 py-3 border-b border-surface-400">${sanitize(category.name)}</h2>
+      <div id="category-${category.id}" class="mb-12 scroll-mt-24">
+        <h2 class="font-display text-2xl font-bold mb-6 text-white border-l-4 border-accent pl-4">${sanitize(category.name)}</h2>
         <div class="grid gap-6">
           ${categoryItems.map(item => `
-            <div class="public-menu-item flex gap-4 p-4 card" onclick="window.app.api.trackItemView(window.app.supabaseClient, '${item.id}')">
+            <div class="public-menu-item flex gap-4 p-4 card bg-surface-100 hover:border-accent/40 transition-all border-surface-400 group" onclick="window.app.api.trackItemView(window.app.supabaseClient, '${item.id}')">
               ${item.image_url ? `
-                <img src="${item.image_url}" alt="${sanitize(item.name)}" class="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-2xl flex-shrink-0">
+                <img src="${item.image_url}" alt="${sanitize(item.name)}" class="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-2xl flex-shrink-0 shadow-lg group-hover:scale-105 transition-transform">
               ` : `
                 <div class="w-24 h-24 sm:w-32 sm:h-32 bg-surface-400 rounded-2xl flex-shrink-0 flex items-center justify-center">
                   <i data-lucide="utensils" class="w-10 h-10 text-surface-500"></i>
@@ -243,10 +305,10 @@ export function renderPublicMenu(restaurant, publicCategories, publicItems, supa
               `}
               <div class="flex-1 min-w-0 flex flex-col justify-center">
                 <div class="flex items-start justify-between gap-2">
-                  <h3 class="font-bold text-lg sm:text-xl">${sanitize(item.name)}</h3>
-                  <span class="text-accent font-bold text-lg">$${parseFloat(item.price).toFixed(2)}</span>
+                  <h3 class="font-bold text-lg sm:text-xl text-white group-hover:text-accent transition-colors">${sanitize(item.name)}</h3>
+                  <span class="text-accent font-bold text-xl" style="${restaurant.primary_color ? `color: ${restaurant.primary_color}` : ''}">$${parseFloat(item.price).toFixed(2)}</span>
                 </div>
-                <p class="text-sm text-surface-500 line-clamp-2 mt-2">${sanitize(item.description)}</p>
+                <p class="text-sm text-surface-500 line-clamp-2 mt-2 leading-relaxed">${sanitize(item.description)}</p>
               </div>
             </div>
           `).join('')}

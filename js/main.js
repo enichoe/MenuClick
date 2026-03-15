@@ -116,20 +116,50 @@ async function initDashboard() {
   
   // Set menu links
   if (state.currentRestaurant) {
-    const menuUrl = `${BASE_URL}/menu.html?s=${state.currentRestaurant.slug}`;
-    const input = document.getElementById('menuUrlInput');
-    if (input) input.value = menuUrl;
+    // Fill settings form
+    const r = state.currentRestaurant;
+    const fields = {
+      settingsRestaurantName: r.name,
+      settingsRestaurantDesc: r.description,
+      settingsPhone: r.phone,
+      settingsAddress: r.address,
+      settingsMaps: r.google_maps_url,
+      settingsWhatsapp: r.whatsapp,
+      settingsInstagram: r.instagram,
+      settingsFacebook: r.facebook,
+      settingsTiktok: r.tiktok,
+      settingsWebsite: r.website,
+      settingsPrimaryColor: r.primary_color || '#10b981',
+      settingsButtonColor: r.button_color || '#10b981',
+      settingsLogoUrl: r.logo_url,
+      settingsBannerUrl: r.banner_url
+    };
+    
+    Object.entries(fields).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val || (el.type === 'color' ? '#10b981' : '');
+    });
+
+    // Fill hours
+    if (r.opening_hours) {
+      Object.entries(r.opening_hours).forEach(([day, h]) => {
+        const openInput = document.querySelector(`input[data-day="${day}"][data-type="open"]`);
+        const closeInput = document.querySelector(`input[data-day="${day}"][data-type="close"]`);
+        const closedCheck = document.querySelector(`input[data-day="${day}"][data-type="closed"]`);
+        if (openInput) openInput.value = h.open || '';
+        if (closeInput) closeInput.value = h.close || '';
+        if (closedCheck) closedCheck.checked = h.closed || false;
+      });
+    }
+
+    const menuUrl = `${BASE_URL}/menu.html?s=${r.slug}`;
+    const urlInput = document.getElementById('menuUrlInput');
+    if (urlInput) urlInput.value = menuUrl;
     const link = document.getElementById('viewMenuLink');
     if (link) {
       link.href = menuUrl;
       link.classList.remove('hidden');
     }
-    
-    const nameInput = document.getElementById('settingsRestaurantName');
-    const descInput = document.getElementById('settingsRestaurantDesc');
-    
-    if (nameInput) nameInput.value = state.currentRestaurant.name || '';
-    if (descInput) descInput.value = state.currentRestaurant.description || '';
   }
 }
 
@@ -201,6 +231,7 @@ async function handleItemSubmit(e) {
   const id = document.getElementById('itemId').value;
   const imageUrl = document.getElementById('itemImageUrl').value;
   const itemData = {
+    restaurant_id: state.currentRestaurant.id, // Requerido por la BD y RLS
     category_id: document.getElementById('itemCategory').value,
     name: document.getElementById('itemName').value,
     description: document.getElementById('itemDesc').value,
@@ -214,8 +245,13 @@ async function handleItemSubmit(e) {
     await supabaseClient.from('menu_items').update(itemData).eq('id', id);
     ui.showToast('Plato actualizado');
   } else {
-    await supabaseClient.from('menu_items').insert(itemData);
-    ui.showToast('Plato creado');
+    const { error } = await supabaseClient.from('menu_items').insert(itemData);
+    if (error) {
+      console.error('Insert error:', error);
+      ui.showToast('Error al crear plato: ' + error.message, 'error');
+    } else {
+      ui.showToast('Plato creado');
+    }
   }
   
   ui.closeItemModal();
@@ -224,14 +260,45 @@ async function handleItemSubmit(e) {
 
 async function handleSettingsSubmit(e) {
   e.preventDefault();
-  const data = {
+  
+  const hours = {};
+  ['lunes','martes','miercoles','jueves','viernes','sabado','domingo'].forEach(day => {
+    hours[day] = {
+      open: document.querySelector(`input[data-day="${day}"][data-type="open"]`).value,
+      close: document.querySelector(`input[data-day="${day}"][data-type="close"]`).value,
+      closed: document.querySelector(`input[data-day="${day}"][data-type="closed"]`).checked
+    };
+  });
+  
+  const settingsData = {
     name: document.getElementById('settingsRestaurantName').value,
-    description: document.getElementById('settingsRestaurantDesc').value
+    description: document.getElementById('settingsRestaurantDesc').value,
+    phone: document.getElementById('settingsPhone').value,
+    address: document.getElementById('settingsAddress').value,
+    google_maps_url: document.getElementById('settingsMaps').value,
+    whatsapp: document.getElementById('settingsWhatsapp').value,
+    instagram: document.getElementById('settingsInstagram').value,
+    facebook: document.getElementById('settingsFacebook').value,
+    tiktok: document.getElementById('settingsTiktok').value,
+    website: document.getElementById('settingsWebsite').value,
+    primary_color: document.getElementById('settingsPrimaryColor').value,
+    button_color: document.getElementById('settingsButtonColor').value,
+    logo_url: document.getElementById('settingsLogoUrl').value,
+    banner_url: document.getElementById('settingsBannerUrl').value,
+    opening_hours: hours
   };
   
-  await supabaseClient.from('restaurants').update(data).eq('id', state.currentRestaurant.id);
-  ui.showToast('Configuracion guardada');
-  await initDashboard();
+  const { error } = await supabaseClient
+    .from('restaurants')
+    .update(settingsData)
+    .eq('id', state.currentRestaurant.id);
+    
+  if (error) {
+    ui.showToast('Error al guardar configuración', 'error');
+  } else {
+    ui.showToast('Configuración guardada exitosamente');
+    await initDashboard();
+  }
 }
 
 function updateDashboardStats() {

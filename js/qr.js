@@ -30,22 +30,36 @@ export function generateHeroQR() {
 export function generateDashboardQR() {
   if (!state.currentRestaurant) return;
   
+  // Usamos el formato compatible con Vercel pero también soportamos el fallback
   const menuUrl = `${BASE_URL}/menu/${state.currentRestaurant.slug}`;
   const containers = ['dashboardQR', 'mainQR'];
   
   containers.forEach(id => {
     const container = document.getElementById(id);
-    if (container && typeof QRCode !== 'undefined') {
-      QRCode.toCanvas(document.createElement('canvas'), menuUrl, {
-        width: id === 'mainQR' ? 192 : 96,
-        margin: 0,
-        color: { dark: '#000000', light: '#ffffff' }
-      }, (error, canvas) => {
-        if (!error) {
-          container.innerHTML = '';
-          container.appendChild(canvas);
+    if (!container) return;
+    
+    // El objeto global de la librería es QRCode
+    const qrLib = window.QRCode || (typeof QRCode !== 'undefined' ? QRCode : null);
+    
+    if (qrLib) {
+      container.innerHTML = '';
+      const canvas = document.createElement('canvas');
+      container.appendChild(canvas);
+      
+      qrLib.toCanvas(canvas, menuUrl, {
+        width: id === 'mainQR' ? 240 : 120,
+        margin: 2,
+        color: { dark: '#000000', light: '#ffffff' },
+        errorCorrectionLevel: 'H'
+      }, (error) => {
+        if (error) {
+          console.error('QR Generation Error:', error);
+          container.innerHTML = '<p class="text-xs text-red-500">Error al generar QR</p>';
         }
       });
+    } else {
+      console.error('QRCode library not found');
+      container.innerHTML = '<p class="text-xs text-red-500">Librería QR no cargada</p>';
     }
   });
 }
@@ -56,10 +70,19 @@ export function generateDashboardQR() {
 export function downloadQR() {
   const canvas = document.querySelector('#mainQR canvas');
   if (canvas && state.currentRestaurant) {
-    const link = document.createElement('a');
-    link.download = `qr-${state.currentRestaurant.slug}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    try {
+      const link = document.createElement('a');
+      link.download = `menu-qr-${state.currentRestaurant.slug}.png`;
+      link.href = canvas.toDataURL('image/png');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e) {
+      console.error('Download failed', e);
+      alert('No se pudo descargar la imagen directamente. Intente click derecho -> Guardar imagen.');
+    }
+  } else {
+    alert('QR no generado. Intente recargar la página.');
   }
 }
 
