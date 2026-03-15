@@ -194,9 +194,21 @@ export function renderPublicMenu(restaurant, publicCategories, publicItems, supa
   // 2. Banner y Logo
   const bannerEl = document.getElementById('publicMenuBanner');
   const bannerImg = document.getElementById('publicBannerImg');
+  const logoContainer = document.getElementById('publicMenuLogo');
+
   if (restaurant.banner_url && bannerEl && bannerImg) {
     bannerImg.src = restaurant.banner_url;
     bannerEl.classList.remove('hidden');
+    if (logoContainer) {
+      logoContainer.classList.remove('mt-8');
+      logoContainer.classList.add('-mt-16');
+    }
+  } else {
+    if (bannerEl) bannerEl.classList.add('hidden');
+    if (logoContainer) {
+      logoContainer.classList.remove('-mt-16');
+      logoContainer.classList.add('mt-8');
+    }
   }
 
   const logoImg = document.getElementById('publicLogoImg');

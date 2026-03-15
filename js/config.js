@@ -10,7 +10,7 @@ export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 export const BASE_URL = window.location.origin;
 
 // Application constants
-export const APP_NAME = 'MenuQR Pro';
+export const APP_NAME = 'MenuClick';
 export const PLANS = {
   free: { name: 'Gratis', color: 'text-surface-500' },
   pro: { name: 'Pro', color: 'text-accent' },

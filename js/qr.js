@@ -31,7 +31,7 @@ export function generateDashboardQR() {
   if (!state.currentRestaurant) return;
   
   // Usamos el formato compatible con Vercel pero también soportamos el fallback
-  const menuUrl = `${BASE_URL}/menu/${state.currentRestaurant.slug}`;
+  const menuUrl = `${BASE_URL}/menu.html?s=${state.currentRestaurant.slug}`;
   const containers = ['dashboardQR', 'mainQR'];
   
   containers.forEach(id => {
