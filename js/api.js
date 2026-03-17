@@ -77,8 +77,8 @@ export async function loadUserData(supabase) {
 export async function loadDashboardData(supabase) {
   if (!supabase || !state.currentRestaurant || !state.currentMenu) return;
   
-  // Load categories and items in parallel for performance
-  const [catsRes, itemsRes] = await Promise.all([
+  // Load stats, categories and items in parallel for performance
+  const [catsRes, itemsRes, viewsRes, qrsRes] = await Promise.all([
     handle(
       supabase.from('categories')
         .select('*')
@@ -92,11 +92,34 @@ export async function loadDashboardData(supabase) {
         .eq('restaurant_id', state.currentRestaurant.id) // Multi-tenant safety
         .order('sort_order', { ascending: true }),
       'Error al cargar platos'
+    ),
+    handle(
+      supabase.from('menu_views')
+        .select('*', { count: 'exact', head: true })
+        .eq('restaurant_id', state.currentRestaurant.id)
+    ),
+    handle(
+      supabase.from('qr_codes')
+        .select('scan_count')
+        .eq('restaurant_id', state.currentRestaurant.id)
+        .single()
     )
   ]);
   
   state.setCategories(catsRes.data || []);
   state.setItems(itemsRes.data || []);
+  state.setDashboardStats(viewsRes.count || 0, qrsRes.data?.scan_count || 0);
+  
+  // Re-run stat display
+  if (window.app && window.app.ui && window.app.updateDashboardStats) {
+      window.app.updateDashboardStats();
+  } else {
+      // Fallback for direct DOM update if modules not fully linked
+      const elViews = document.getElementById('statTotalViews');
+      const elScans = document.getElementById('statQrScans');
+      if (elViews) elViews.textContent = viewsRes.count || 0;
+      if (elScans) elScans.textContent = qrsRes.data?.scan_count || 0;
+  }
 }
 
 /**
@@ -105,7 +128,7 @@ export async function loadDashboardData(supabase) {
  * @param {string} slug - Restaurant slug
  * @returns {Promise<Object|null>}
  */
-export async function fetchPublicMenu(supabase, slug) {
+export async function fetchPublicMenu(supabase, slug, source = null) {
   if (!supabase) return null;
   
   // Get restaurant
@@ -125,7 +148,12 @@ export async function fetchPublicMenu(supabase, slug) {
     restaurant_id: restaurant.id,
     viewer_ip: 'anonymous',
     user_agent: navigator.userAgent
-  });
+  }).then();
+
+  // Track QR scan if applicable
+  if (source === 'qr') {
+    trackQrScan(supabase, restaurant.id);
+  }
   
   // Get menu, categories and items
   const menuRes = await handle(
@@ -196,6 +224,16 @@ export async function fetchAdminData(supabase) {
 export async function trackItemView(supabase, itemId) {
   if (!supabase) return;
   await supabase.rpc('increment_item_view', { item_id: itemId });
+}
+
+/**
+ * Track a QR scan
+ * @param {Object} supabase - Supabase client
+ * @param {string} restaurantId - Restaurant ID
+ */
+export async function trackQrScan(supabase, restaurantId) {
+  if (!supabase) return;
+  await supabase.rpc('increment_qr_scan', { rest_id: restaurantId });
 }
 
 /**

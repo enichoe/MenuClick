@@ -14,6 +14,7 @@ export const state = {
   confirmCallback: null,
   uploadedImageUrl: null,
   adminRestaurants: [],
+  dashboardStats: { views: 0, scans: 0 },
   
   // Setters
   setUser(user) { this.currentUser = user; },
@@ -23,5 +24,6 @@ export const state = {
   setCategories(cats) { this.categories = cats; },
   setItems(items) { this.menuItems = items; },
   setUploadedImageUrl(url) { this.uploadedImageUrl = url; },
-  setAdminRestaurants(rests) { this.adminRestaurants = rests; }
+  setAdminRestaurants(rests) { this.adminRestaurants = rests; },
+  setDashboardStats(views, scans) { this.dashboardStats = { views, scans }; }
 };

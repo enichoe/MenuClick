@@ -200,7 +200,7 @@ async function initPublicMenu() {
     return;
   }
   
-  const data = await api.fetchPublicMenu(supabaseClient, slug);
+  const data = await api.fetchPublicMenu(supabaseClient, slug, urlParams.get('source'));
   if (data && data.restaurant) {
     ui.renderPublicMenu(data.restaurant, data.categories || [], data.items || [], supabaseClient);
     
@@ -429,11 +429,16 @@ async function handleSettingsSubmit(e) {
   }
 }
 
-function updateDashboardStats() {
-  if (state.menuItems) {
-    document.getElementById('statTotalItems').textContent = state.menuItems.length;
-    document.getElementById('statTotalCategories').textContent = state.categories.length;
-  }
+export function updateDashboardStats() {
+  const elItems = document.getElementById('statTotalItems');
+  const elCats = document.getElementById('statTotalCategories');
+  const elViews = document.getElementById('statTotalViews');
+  const elScans = document.getElementById('statQrScans');
+
+  if (state.menuItems && elItems) elItems.textContent = state.menuItems.length;
+  if (state.categories && elCats) elCats.textContent = state.categories.length;
+  if (state.dashboardStats && elViews) elViews.textContent = state.dashboardStats.views;
+  if (state.dashboardStats && elScans) elScans.textContent = state.dashboardStats.scans;
 }
 
 function showDashboardSection(section) {
